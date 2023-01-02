@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/usr/local/bin/g++",
+      "-g",
+      "-Wall",
+      "-std=c++17",
+      "-c",
+      "-o",
+      "src/main.o",
+      "src/main.cpp"
+    ],
+    "directory": "/Users/alfonsoyamamoto/dev/scientific_comp/svdProject",
+    "file": "/Users/alfonsoyamamoto/dev/scientific_comp/svdProject/src/main.cpp",
+    "output": "/Users/alfonsoyamamoto/dev/scientific_comp/svdProject/src/main.o"
+  }
+]
