@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <string>
 
 template <class Mtype> class Matrix {
 public:
@@ -28,7 +29,13 @@ public:
       return data_[i*num_cols_ + j];
   }
 
-  // TODO Row/Col operations
+  // Row swap function
+  // swaps row at index row1 and row2
+  void row_swap(int row1, int row2) {
+      checkRowRange(row1);
+      checkRowRange(row2);
+      std::swap(data_[row1 * num_cols_], data_[row2 * num_cols_], num_cols_);
+  }
 
 private:
   int num_rows_;
@@ -40,6 +47,13 @@ private:
              0 <= j && j < num_cols_);
   }
 
+  void checkColumnRange(int j) const {
+      assert(0 <= j && j <= num_cols_);
+  }
+
+  void checkRowRange(int i) const {
+      assert(0 <= i && i <= num_cols_);
+  }
 };
 
 #endif
