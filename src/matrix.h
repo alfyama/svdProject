@@ -15,9 +15,9 @@ public:
   ~Matrix() { delete[] data_; }
 
   // Dimensions methods
-  size_t num_rows() const { return num_rows_; }
+  inline size_t num_rows() const { return num_rows_; }
 
-  size_t num_cols() const { return num_cols_; }
+  inline size_t num_cols() const { return num_cols_; }
 
   // get/set element by index
   Mtype& operator()(int i, int j) {
@@ -37,21 +37,33 @@ public:
       std::swap(data_[row1 * num_cols_], data_[row2 * num_cols_], num_cols_);
   }
 
+  void col_swap(int col1, int col2) {
+      checkColumnRange(col1);
+      checkColumnRange(col2);
+      std::swap(data_[col1 * num_rows_], data_[col2 * num_rows_], num_rows_);
+  }
+
+  // TODO Resize matrix
+  // Eliminates rows/columns with only zeros
+  bool resize(){
+      return true;
+  }
+
 private:
   int num_rows_;
   int num_cols_;
   Mtype *data_;
 
-  void checkRange(int i, int j) const {
+  inline void checkRange(int i, int j) const {
       assert(0 <= i && i < num_rows_ &&
              0 <= j && j < num_cols_);
   }
 
-  void checkColumnRange(int j) const {
+  inline void checkColumnRange(int j) const {
       assert(0 <= j && j <= num_cols_);
   }
 
-  void checkRowRange(int i) const {
+  inline void checkRowRange(int i) const {
       assert(0 <= i && i <= num_cols_);
   }
 };
