@@ -1,7 +1,7 @@
 .POSIX:
 
 CXX=g++
-CXXFLAGS=-g -Wall -std=c++17
+CXXFLAGS=-g -Wall -std=c++17 -fopenmp
 
 SRC=src
 SRCS=$(wildcard $(SRC)/*.cpp)
@@ -23,12 +23,7 @@ $(SRC)/%.o: $(SRC)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 
-
-install: $(TARGET)
-	mkdir -p $(DESTDIR)$(PREFIX)/bin 
-	mkdir -p $(DESTDIR)$(PREFIX)/share/man/man1 
-	cp -f game $(DESTDIR)$(PREFIX)/bin
-	gzip < $(TARGET).1 > $(DESTDIR)$(PREFIX)/share/man/man1/$(TARGET).1.gz
-
 clean:
-	rm -r src/*.o zkt
+	rm -r src/*.o svd
+	cd report && find . ! -name 'main.tex' -type f -exec rm -f {} +
+	cd ..

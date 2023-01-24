@@ -5,6 +5,7 @@
       "-g",
       "-Wall",
       "-std=c++17",
+      "-fopenmp",
       "-c",
       "-o",
       "src/main.o",

@@ -28,17 +28,28 @@ SolverOpt stringArgOpt(string s);
 
 int main(int argc, char *argv[]) {
 
+   MatrixD A(2,2);
+
+   A(0,0) = 3.2;
+   A(1,1) = 1;
+   A(0,1) = 10;
+   A(1,0) = 0;
+
+   A.display();
+
+   IdentityD B(3,3);
+   B.display();
+
+   exit(1);
+
 
     // TODO add functionality to check
     // for valid arguments
-
-
     string s = argv[1];
 
     unique_ptr<solver> msolver;
 
     SolverOpt opt = stringArgOpt(s);
-
 
     switch (opt) {
         case solver1:
@@ -64,7 +75,7 @@ SolverOpt stringArgOpt(string s){
     SolverOpt opt;
     // TODO use proper method for string
     // and literal comparison
-    if(opt == "solver1"){
+    if(s == "solver1"){
         opt = solver1;
     }
     // else if (opt == "solver2") {

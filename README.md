@@ -9,8 +9,15 @@ Numerical recipes_ the art of scientific computing-Cambridge University Press (2
 4. Input data (matrices): https://math.nist.gov/MatrixMarket/formats.html
 This is the same data format we used in assigment 7 and 8, I suggest to use the same format. Read 3. for more info on how to generate matrices (LAPACK Test Software?). I would ask later on isis what we should use anyway.
 
-# Files:
+5. https://www.cs.utexas.edu/users/inderjit/public_papers/HLA_SVD.pdf
 
-matrix.h: Matrix object implementation.
-vector.h: Vector object implementation.
-methods.h: Methods for computing SVG.
+6. READ THE PART ABOUT NUMERICAL APPROACH https://en.wikipedia.org/wiki/Singular_value_decomposition.
+
+# Files:
+- matrix.h: Matrix object implementation.
+- vector.h: Vector object implementation.
+- methods.h: Methods for computing SVG.
+
+# Methods
+
+1. Golub & Kahan (Alfonso)
