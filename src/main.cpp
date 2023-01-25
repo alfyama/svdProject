@@ -28,17 +28,29 @@ SolverOpt stringArgOpt(string s);
 
 int main(int argc, char *argv[]) {
 
-   MatrixD A(2,2);
+   MatrixD A(3,3);
 
    A(0,0) = 3.2;
    A(1,1) = 1;
    A(0,1) = 10;
    A(1,0) = 0;
+   A(0,2) = 2;
+   A(1,2) = 4;
+   A(2,0) = 1;
+   A(2,1) = 5;
+   A(2,2) = 9;
 
    A.display();
+   std::cout << std::endl;
 
    IdentityD B(3,3);
+
    B.display();
+   std::cout << std::endl;
+
+   MatrixD C = A*B;
+
+   C.display();
 
    exit(1);
 
