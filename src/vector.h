@@ -8,7 +8,7 @@
 template <class Vtype> class Vector {
 public:
   Vector();
-  explicit Vector(int n) : num_elements_(n){};
+  explicit Vector(int n) : num_elements_(n), data_(new Vtype[n]){};
 
   // Destructor
   ~Vector() { delete[] data_; }

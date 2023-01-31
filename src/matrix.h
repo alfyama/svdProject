@@ -6,6 +6,8 @@
 #include <iostream>
 #include <omp.h>
 #include <string>
+#include <vector>
+#include <iomanip>
 
 #include "StdTypes.h"
 #include "vector.h"
@@ -23,13 +25,19 @@ public:
     num_rows_ = other.num_rows_;
   }
 
-    Matrix(int m, int n, const Mtype *data) : num_rows_(m), num_cols_(n){
-      data_ = new Mtype[m * n];
-      int i;
-      for(i=0; i < m*n; i++){
-        data_[i] = data[i];
-      }
+  Matrix(int m, int n, const Mtype *data) : num_rows_(m), num_cols_(n) {
+    data_ = new Mtype[m * n];
+    int i;
+    for (i = 0; i < m * n; i++) {
+      data_[i] = data[i];
     }
+  }
+
+  Matrix(int m, int n, const std::vector<Mtype>& data) : num_rows_(m), num_cols_(n) {
+
+    // TODO implement this constructors for vectors
+
+  }
 
   // Destructors
   ~Matrix() { delete[] data_; }
@@ -44,7 +52,7 @@ public:
     int i, j;
     for (i = 0; i < num_rows_; i++) {
       for (j = 0; j < num_cols_; j++) {
-        std::cout << data_[i * num_cols_ + j] << ' ';
+        std::cout << std::setw(6) << std::fixed << std::setprecision(2) << data_[i * num_cols_ + j] << "  ";
       }
       std::cout << "\n";
     }
@@ -116,20 +124,30 @@ public:
   }
 
   // Ovelaod operators
-  template<class T> friend Matrix<T> operator+ (const Matrix<T>& lhs, const Matrix<T>& rhs);
-  template<class T> friend Matrix<T> operator+ (const T& lhs, const Matrix<T> rhs);
-  template<class T> friend Matrix<T> operator+ (const Matrix<T> lhs, const T& rhs);
+  template <class T>
+  friend Matrix<T> operator+(const Matrix<T> &lhs, const Matrix<T> &rhs);
+  template <class T>
+  friend Matrix<T> operator+(const T &lhs, const Matrix<T> rhs);
+  template <class T>
+  friend Matrix<T> operator+(const Matrix<T> lhs, const T &rhs);
 
-  template<class T> friend Matrix<T> operator- (const Matrix<T>& lhs, const Matrix<T>& rhs);
-  template<class T> friend Matrix<T> operator- (const T& lhs, const Matrix<T> rhs);
-  template<class T> friend Matrix<T> operator- (const Matrix<T> lhs, const T& rhs);
+  template <class T>
+  friend Matrix<T> operator-(const Matrix<T> &lhs, const Matrix<T> &rhs);
+  template <class T>
+  friend Matrix<T> operator-(const T &lhs, const Matrix<T> rhs);
+  template <class T>
+  friend Matrix<T> operator-(const Matrix<T> lhs, const T &rhs);
 
-  template<class T> friend Matrix<T> operator* (const Matrix<T>& lhs, const Matrix<T>& rhs);
-  template<class T> friend Matrix<T> operator* (const T& lhs, const Matrix<T> rhs);
-  template<class T> friend Matrix<T> operator* (const Matrix<T> lhs, const T& rhs);
-  template<class T> friend Matrix<T> operator* (const Vector<T>& lhs, const Matrix<T>& rhs);
-  template<class T> friend Vector<T> operator* (const Matrix<T>& lhs, const Vector<T>& rhs);
-
+  template <class T>
+  friend Matrix<T> operator*(const Matrix<T> &lhs, const Matrix<T> &rhs);
+  template <class T>
+  friend Matrix<T> operator*(const T &lhs, const Matrix<T> rhs);
+  template <class T>
+  friend Matrix<T> operator*(const Matrix<T> lhs, const T &rhs);
+  template <class T>
+  friend Matrix<T> operator*(const Vector<T> &lhs, const Matrix<T> &rhs);
+  template <class T>
+  friend Vector<T> operator*(const Matrix<T> &lhs, const Vector<T> &rhs);
 
 private:
   int num_rows_;
@@ -146,7 +164,6 @@ private:
 
   inline void checkRowRange(int i) const { assert(0 <= i && i <= num_cols_); }
 };
-
 
 template <class Mtype> class Identity : public Matrix<Mtype> {
 public:
@@ -168,7 +185,7 @@ public:
     }
   }
 
-    // This allows us to have rectangular matrices, but with a diagonal of ones
+  // This allows us to have rectangular matrices, but with a diagonal of ones
   Identity(const Matrix<Mtype> &M)
       : Matrix<Mtype>::Matrix(M.num_rows(), M.num_cols()) {
     (*this).resize(M.num_rows(), M.num_rows());
@@ -190,49 +207,43 @@ public:
 
 // }
 
-
 // template<class T>
 // Vector<T> operator* (const Matrix<T>& lhs, const Vector<T>& rhs){
 
 // }
 
-template<class T>
-Matrix<T> operator* (const Matrix<T>& lhs, const Matrix<T>& rhs){
+template <class T>
+Matrix<T> operator*(const Matrix<T> &lhs, const Matrix<T> &rhs) {
   int rhs_rows = rhs.num_rows_;
   int rhs_cols = rhs.num_cols_;
   int lhs_rows = lhs.num_rows_;
   int lhs_cols = lhs.num_cols_;
 
-  if (lhs_cols == rhs_rows){
+  if (lhs_cols == rhs_rows) {
     T *tempdata = new T[lhs_rows * rhs_cols];
 
     int lr, rc;
     // loop over  each row of LHS
-    for(lr = 0; lr < lhs_rows; lr++){
+    for (lr = 0; lr < lhs_rows; lr++) {
       // loop over each column of RHS
-      for(rc=0; rc < rhs_cols; rc++){
+      for (rc = 0; rc < rhs_cols; rc++) {
         T element = 0.0;
 
         int i;
-        for(i = 0; i < lhs_cols; i++){
+        for (i = 0; i < lhs_cols; i++) {
           element += lhs(lr, i) * rhs(i, rc);
         }
         tempdata[(lr * rhs_cols) + rc] = element;
       }
     }
     Matrix<T> result(lhs_rows, rhs_cols, tempdata);
-    delete [] tempdata;
+    delete[] tempdata;
     return result;
-  }
-  else {
-    Matrix<T> result(1,1);
+  } else {
+    Matrix<T> result(1, 1);
     return result;
   }
 }
-
-
-
-
 
 // typedefs so that the user does not create
 // matrices with types like string or char

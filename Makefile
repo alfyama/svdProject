@@ -8,10 +8,13 @@ SRCS=$(wildcard $(SRC)/*.cpp)
 
 OBJS=$(patsubst $(SRC)/%.cpp, $(SRC)/%.o, $(SRCS))
 
-
 TARGET=svd
 
+
 all: $(TARGET)
+
+debug: CXXFLAGS += -DDEBUG=1
+debug: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $@

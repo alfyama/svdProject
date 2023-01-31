@@ -8,7 +8,7 @@
 
 
 
-void Householder_svdcmp(MatrixD &matrix, MatrixD &V, VectorD &W);
+void Householder_svdcmp(MatrixD &matrix, MatrixD &U, VectorD &W, MatrixD &V);
 
 void Householder_svdcmp(MatrixD &matrix, MatrixD &V, VectorLD &W);
 
