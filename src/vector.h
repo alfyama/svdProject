@@ -16,7 +16,9 @@ public:
   // Assigment operator
   Vector &operator=(const Vector &rhs);
 
-  inline int size() const;
+  inline int size() const {
+    return num_elements_;
+    };
 
   // get/set
   inline Vtype &operator[](const int index) {

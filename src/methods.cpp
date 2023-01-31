@@ -161,11 +161,13 @@ void HouseholderReductionToBidiagonal(MatrixD &A, VectorD &w_) {
     // Transformations for the cols
     if (i < m) {
       HouseholderTransformCol(A, i, w, hv);
+
 #if DEBUG
   std::cout << "Transform col" << std::endl;
   A.display();
   std::cout << std::endl;
 #endif
+
     }
     // Transformations for the rows
     if (i < n - 2) {
@@ -186,7 +188,7 @@ void HouseholderReductionToBidiagonal(MatrixD &A, VectorD &w_) {
 #endif
 }
 
-void Householder_svdcmp(MatrixD &A, MatrixD &U, VectorD &W, MatrixD &V) {
+void Householder_svdcmp(MatrixD &A, VectorD &W) {
 
   int i, n, m;
 

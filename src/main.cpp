@@ -39,10 +39,8 @@ int main(int argc, char *argv[]) {
   MatrixD A2(3, 3, data2);
 
   VectorD W(3);
-  MatrixD U(3, 3);
-  MatrixD V(3, 3);
 
-  Householder_svdcmp(A, U, W, V);
+  Householder_svdcmp(A, W);
   // Householder_svdcmp(A2, U, W, V);
 
   // exit(1);
