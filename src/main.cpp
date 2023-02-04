@@ -1,5 +1,5 @@
 #include "matrix.h"
-#include "methods.h"
+#include "golub_reinsch.h"
 #include <exception>
 #include <iostream>
 #include <memory>

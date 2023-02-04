@@ -4,7 +4,6 @@
 #include <cassert>
 #include <cstddef>
 #include <iostream>
-#include <omp.h>
 #include <string>
 #include <vector>
 #include <iomanip>

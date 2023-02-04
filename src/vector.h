@@ -16,9 +16,7 @@ public:
   // Assigment operator
   Vector &operator=(const Vector &rhs);
 
-  inline int size() const {
-    return num_elements_;
-    };
+  inline int size() const { return num_elements_; };
 
   // get/set
   inline Vtype &operator[](const int index) {
@@ -30,19 +28,19 @@ public:
     return data_[index];
   }
 
-    bool resize(){
-        return true;
-    }
+  Vtype *begin() { return data_; }
+  Vtype *end() { return data_ + num_elements_; }
 
-    // Vtype norm(){
-    //   Vtype val;
-    //   int i;
-    //   for(i = 0; i < num_elements_; i++){
-    //     val = data_[i] * data_[i];
-    //   }
-    //   return sqrt(val);
-    // }
+  bool resize() { return true; }
 
+  // Vtype norm(){
+  //   Vtype val;
+  //   int i;
+  //   for(i = 0; i < num_elements_; i++){
+  //     val = data_[i] * data_[i];
+  //   }
+  //   return sqrt(val);
+  // }
 
 private:
   int num_elements_;

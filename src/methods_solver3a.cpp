@@ -120,7 +120,7 @@ void segmentandprocess(VectorD diagvector, VectorD supdiagvector, int B_size, in
     // TODO:
     // add .begin() and .end()
     
-    double mu = min(diagvector.begin(), diagvector.end());
+    double mu = min(*diagvector.begin(), *diagvector.end());
     double d = diagvector[0] - mu;
 
     for (int i = 0; i <= B_size; i++)
