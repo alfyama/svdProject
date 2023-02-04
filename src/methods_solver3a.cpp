@@ -1,113 +1,243 @@
 #include "matrix.h"
 #include "vector.h"
 
+using namespace std;
 
-
-//input = two vectors s (diagonal of B) and 3 (superdiagonal of B)
-void svdsolver1(VectorD diag, VectorD supdiag)
+void thresholdcheck(VectorD supdiagonalvector)
 {
-    VectorD B2_diag;
-    VectorD B2_supdiag;
-    VectorD B3_diag;
-    VectorD B3_supdiag;
-    int q;
-    int p;
 
     // zero out any value on the super-diagonal that meets the convergence criteria
     double threshold = 0.001;
     auto set_to_zero = [threshold](double& x) { x = (x < threshold) ? 0 : x; };
-    for (int i = 1; i < supdiag.size(); i++)
+    for (int i = 1; i < supdiagonalvector.size(); i++)
     {
-        if(supdiag[i] < threshold)
+        if(supdiagonalvector[i] < threshold)
         {
-            set_to_zero(supdiag[i]);
-        }
-    }
-
-    //TODO: initialize B3_diag so we can enter the loop and count 
-
-    // begin loop to segment the B matrix into B1, B2, B3 and perform Given's rotations until B3 is nxn
-    while (B3_diag.size() < diag.size())
-    {
-        // determine p & q to segment B so that B3 is diagonal, B2 has no zero superdiag
-        int zero_count = 0;
-        // count zeros from end of vector
-        for (int i = -1; i >= -1 * supdiag.size(); --i)
-        {
-            if (supdiag[i] == 0)
-            {
-                ++zero_count;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        int nonzero_count = 0;
-        // count nonzeros starting from the last zero found in previous loop
-        for (int i = -1 - zero_count; i >= -1 * supdiag.size(); --i)
-        {
-            if (supdiag[i] == 0)
-            {
-                break;
-            }
-            else
-            {
-                ++nonzero_count;
-            }
-        }
-
-        // segment the B vectors into 2 vectors, B2/3
-        for (int i = diag.size() - zero_count + 1; i <= diag.size(); i++)
-        {
-            B3_diag.push_back(diag[i]);
-        }
-        for (int i = diag.size() - zero_count + 1; i <= diag.size() - 1; i++)
-        {
-            B3_supdiag.push_back(diag[i]);
-        }
-        for (int i = diag.size() - zero_count - nonzero_count + 1; i < diag.size() - zero_count; i++)
-        {
-            B2_diag.push_back(diag[i]);
-        }
-        for (int i = diag.size() - zero_count - nonzero_count + 1; i < diag.size() - zero_count - 1; i++)
-        {
-            B2_supdiag.push_back(diag[i]);
-        }
-
-        //
-        if (B3_diag.size() == diag.size())
-        {
-            //take sq root of B3_diag and create a matrix 'S' with this new vector on the diagonal
-            //matrix 'S' is the Singlualr Value matrix
-            break;
-        }
-        else
-        {
-            //reverse loop, starting from B2_diag[-1]
-            for(int i = -1; i >= -1 * B2_diag.size(); --i)
-            {
-                if (B2_diag[i] == 0)
-                {
-                    //TODO:
-                    //apply givens roation so that B2_supdiag[i-1] == 0
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            //TODO:
-            //apply shifting strategy logic
-            //so that at least the last element in B2_diag == 0
-            
-            
-            //then 'break;' so that we can re-segment the original matrix B
-            //after setting some of the supdiag values to 0 (which means B3 will grow)
-            break;
+            set_to_zero(supdiagonalvector[i]);
         }
     }
 }
 
+
+int reversecountzeros(VectorD countingvector, int start, int end)
+{
+    int zerocount = 0;
+    for (int i = start; i <= end; --i)
+    {
+        if (countingvector[i] == 0)
+        {
+            zerocount++;
+        }
+        else
+        {
+            break;
+        }
+    }
+    return zerocount;
+}
+
+int reversecountnonzeros(VectorD countingvector, int start, int end)
+{
+    int nonzerocount = 0;
+    for (int i = start; i <= end; --i)
+    {
+        if (countingvector[i] == 0)
+        {
+            break;
+        }
+        else
+        {
+            nonzerocount++;
+        }
+    }
+    return nonzerocount;
+}
+
+VectorD calculatesingularvalues(VectorD diagonalvector, int B_size)
+{
+    VectorD sigma(B_size);
+
+    for (int i = 0; i <= B_size; i++)
+    {
+        sigma[i] = sqrt(diagonalvector[i]);
+    }
+
+    return sigma;
+}
+
+void segmentandprocess(VectorD diagvector, VectorD supdiagvector, int B_size, int B2_size, int B3_size)
+{
+    VectorD B2_diag(B2_size);
+    VectorD B2_supdiag(B2_size - 1);
+    VectorD B3_diag(B3_size);
+    VectorD B3_supdiag(B3_size - 1);
+    VectorD diag_copy(B_size);
+    VectorD supdiag_copy(B_size);
+    bool shiftsuccess = false;
+
+
+      // segment the B vectors into 2 vectors, B2/3
+    for (int i = 0, j = B_size - B3_size; j <= B_size; i++, j++)
+    {
+        B3_diag[i] = diagvector[j];
+    }
+    for (int i = 0, j = B_size - B3_size; j <= B_size - 1; i++, j++)
+    {
+        B3_supdiag[i] = supdiagvector[j];
+    }
+    for (int i = 0, j = B_size - B3_size - B2_size; j < B_size - B3_size; i++, j++)
+    {
+        B2_diag[i] = diagvector[j];
+    }
+    for (int i = 0, j = B_size - B3_size - B2_size; j < B_size - B3_size - 1; i++, j++)
+    {
+        B2_supdiag[i] = supdiagvector[j];
+    }
+    
+    //reverse loop, starting from the end of B2_diag
+    for(int i = -1; i >= -1 * B2_size; --i)
+    {
+        if (B2_diag[i] == 0)
+        {
+            //apply givens roation so that B2_supdiag[i-1] == 0
+            int x = B2_supdiag[i-1];
+            int y = B2_diag[i];
+            int r = sqrt(pow(x, 2) + pow(y, 2));
+            int c = y / r;
+            int s = x / r;
+            B2_diag[i] = s * B2_supdiag[i-1] + c * B2_diag[i];
+            B2_diag[i-1] = c * B2_diag[i-1];
+            B2_supdiag[i-1] = c * B2_supdiag[i-1] - s * B2_diag[i]; // should be 0 after rotation
+        }
+        else
+        {
+            break;
+        }
+    }
+    //apply shifting strategy logic to diag & supdiag vectors so diag[-1] decreases below tollerence
+
+    //QUESTION: should the shift be on B1/2, B2/3 or the entire B?
+    // TODO:
+    // add .begin() and .end()
+    
+    double mu = min(diagvector.begin(), diagvector.end());
+    double d = diagvector[0] - mu;
+
+    for (int i = 0; i <= B_size; i++)
+    {
+        diag_copy[i] = diagvector[i];
+    }
+
+    for (int i = 0; i <= B_size - 1; i++)
+    {
+        supdiag_copy[i] = supdiagvector[i];
+    }
+
+    while (shiftsuccess = false)
+    {
+        for (int k = 0; k < B_size - 1; k++)
+        {
+            double t;
+
+            diagvector[k] = d + supdiagvector[k];
+            t = diagvector[k+1] / diagvector[k];
+            supdiagvector[k] = supdiagvector[k] * t;
+            d = d * t - mu;
+
+            if (d < 0)
+            {
+                for (int i = 0; i <= B_size; i++)
+                {
+                    diagvector[i] = diag_copy[i];
+                }
+                for (int i = 0; i <= B_size - 1; i++)
+                {
+                    supdiagvector[i] = supdiag_copy[i];
+                }
+                mu = mu / 2;
+                shiftsuccess = false;
+                break;
+            }
+            shiftsuccess = true;
+        }
+        // if the shift was successful, set the last diagonal vector element = d
+        if(shiftsuccess == true)
+        {
+            diagvector[-1] = d;
+        }
+    }
+
+
+    // inverse the segmenting B logic so all changes are transfered to diagvector and supdiagvector
+    for (int i = 0, j = B_size - B3_size; j <= B_size; i++, j++)
+    {
+        diagvector[j] = B3_diag[i];
+    }
+    for (int i = 0, j = B_size - B3_size; j <= B_size - 1; i++, j++)
+    {
+        supdiagvector[j] = B3_supdiag[i];
+    }
+    for (int i = 0, j = B_size - B3_size - B2_size; j < B_size - B3_size; i++, j++)
+    {
+        diagvector[j] = B2_diag[i];
+    }
+    for (int i = 0, j = B_size - B3_size - B2_size; j < B_size - B3_size - 1; i++, j++)
+    {
+        supdiagvector[j] = B2_supdiag[i];
+    }
+}
+
+
+VectorD Solver3_methods(VectorD diagvector, VectorD supdiagvector, int B_size)
+{
+    int B3_size;
+    int B2_size;
+    VectorD sigma;
+
+    thresholdcheck(supdiagvector);
+    B3_size = reversecountzeros(supdiagvector, -1, -1 * (B_size - 1));
+
+    while (B3_size < B_size)
+    {
+        B2_size = reversecountnonzeros(supdiagvector, -1 * B3_size, -1 * (B_size - 1));
+        segmentandprocess(diagvector, supdiagvector, B_size, B2_size, B3_size);
+        thresholdcheck(supdiagvector);
+        B3_size = reversecountzeros(supdiagvector, -1, -1 * (B_size - 1));
+    }
+
+    //Assert that (B3_size == B_size), otherwise something isn't right...
+    sigma = calculatesingularvalues(diagvector, B_size);
+}
+
+
+VectorD Solver3_main(MatrixD bidiagmatrix)
+{
+    //assert that matrix is bi-diagonal
+
+    int n = bidiagmatrix.num_cols();
+    VectorD diag(n);
+    VectorD supdiag(n);
+    VectorD solution(n);
+    VectorD B3_diag;
+
+    int q;
+    int p;
+    double mu;
+    double d;
+    bool shiftsuccess;
+
+
+    // convert and square bidiagonal matrix into two vectors: diag, and supdiag
+    for (int i = 0; i < n; i++)
+    {
+        diag[i] = bidiagmatrix(i, i) * bidiagmatrix(i, i);
+    }
+    for (int i = 0; i < n - 1; i++)
+    {
+        supdiag[i] = bidiagmatrix(i, i + 1) * bidiagmatrix(i, i + 1);
+    }
+
+    solution = Solver3_methods(diag, supdiag, n);
+
+    return solution;
+}
