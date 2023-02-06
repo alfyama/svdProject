@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include "golub_reinsch.h"
+#include "methods_solver3a.h"
 #include <exception>
 #include <iostream>
 #include <memory>
@@ -26,6 +27,7 @@ enum SolverOpt {
 };
 
 SolverOpt stringArgOpt(string s);
+VectorD Solver3_main(MatrixD bidiagmatrix);
 
 int main(int argc, char *argv[]) {
 
@@ -86,4 +88,28 @@ SolverOpt stringArgOpt(string s) {
   }
 
   return opt;
+}
+
+VectorD Solver3_main(MatrixD bidiagmatrix)
+{
+    //assert that matrix is bi-diagonal
+
+    int n = bidiagmatrix.num_cols();
+    VectorD diag(n);
+    VectorD supdiag(n);
+    VectorD solution(n);
+
+    // convert and square bidiagonal matrix into two vectors: diag, and supdiag
+    for (int i = 0; i < n; i++)
+    {
+        diag[i] = bidiagmatrix(i, i) * bidiagmatrix(i, i);
+    }
+    for (int i = 0; i < n - 1; i++)
+    {
+        supdiag[i] = bidiagmatrix(i, i + 1) * bidiagmatrix(i, i + 1);
+    }
+
+    solution = Solver3_methods(diag, supdiag, n);
+
+    return solution;
 }
