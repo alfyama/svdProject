@@ -1,9 +1,13 @@
-#include "matrix.h"
-#include "golub_reinsch.h"
 #include <exception>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <fstream>
+
+
+#include "golub_reinsch.h"
+#include "matrix.h"
+
 
 using namespace std;
 
@@ -27,10 +31,43 @@ enum SolverOpt {
 
 SolverOpt stringArgOpt(string s);
 
+
+
+
 int main(int argc, char *argv[]) {
 
+  std::string flagMethod;
+  std::string flagType;
+  std::string fileName;
+
+  for (int i = 1; i < argc; ++i) {
+    std::string argument(argv[i]);
+    if (argument.substr(0,8) == "-method=") {
+      flagMethod = argument.substr(8);
+    } else if (argument.substr(0,6) == "-type=") {
+      fileName = argument.substr(6);
+    } else if (fileName.empty()) {
+        fileName = argument;
+    } else {
+        std::cout << "Invalid argument: " << argument << std::endl;
+    }
+  }
+
+  if (flagMethod.empty() || flagType.empty() || fileName.empty() ) {
+    std::cerr << "Usage: svd -method=<METHOD> -type=<TYPE> file" << std::endl;
+    return 1;
+  }
+
+
+  std::ifstream inpData(fileName);
+  if(!inpData) {
+
+  }
+
+
+
   Double data1[] = {2, 3, 4, 5, 1,  1,  1,  6,  5,  6,
-                   7, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+                    7, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
   Double data2[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
@@ -41,13 +78,6 @@ int main(int argc, char *argv[]) {
   VectorD W(3);
 
   Householder_svdcmp(A, W);
-  // Householder_svdcmp(A2, U, W, V);
-
-  // exit(1);
-
-  // TODO add functionality to check
-  // for valid arguments
-  // string s = argv[1];
 
   // unique_ptr<solver> msolver;
 

@@ -110,6 +110,7 @@ void segmentandprocess(VectorD diagvector, VectorD supdiagvector, int B_size, in
             B2_supdiag[i-1] = c * B2_supdiag[i-1] - s * B2_diag[i]; // should be 0 after rotation
         }
         else
+
         {
             break;
         }

@@ -1,6 +1,6 @@
+import csv
 import numpy as np
 from scipy import linalg
-import csv
 
 
 def testCase1():
@@ -22,6 +22,7 @@ def testCase2():
         else:
             -1
     return np.fromfunction(f, (30, 30))
+
 
 def testCases():
     return np.random.rand()
