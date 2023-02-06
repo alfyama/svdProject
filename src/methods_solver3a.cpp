@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include "vector.h"
+#include "methods_solver3a.h"
 
 using namespace std;
 
@@ -193,7 +194,7 @@ VectorD Solver3_methods(VectorD diagvector, VectorD supdiagvector, int B_size)
 {
     int B3_size;
     int B2_size;
-    VectorD sigma;
+    VectorD singularvalues;
 
     thresholdcheck(supdiagvector);
     B3_size = reversecountzeros(supdiagvector, -1, -1 * (B_size - 1));
@@ -207,38 +208,7 @@ VectorD Solver3_methods(VectorD diagvector, VectorD supdiagvector, int B_size)
     }
 
     //Assert that (B3_size == B_size), otherwise something isn't right...
-    sigma = calculatesingularvalues(diagvector, B_size);
-}
+    singularvalues = calculatesingularvalues(diagvector, B_size);
 
-
-VectorD Solver3_main(MatrixD bidiagmatrix)
-{
-    //assert that matrix is bi-diagonal
-
-    int n = bidiagmatrix.num_cols();
-    VectorD diag(n);
-    VectorD supdiag(n);
-    VectorD solution(n);
-    VectorD B3_diag;
-
-    int q;
-    int p;
-    double mu;
-    double d;
-    bool shiftsuccess;
-
-
-    // convert and square bidiagonal matrix into two vectors: diag, and supdiag
-    for (int i = 0; i < n; i++)
-    {
-        diag[i] = bidiagmatrix(i, i) * bidiagmatrix(i, i);
-    }
-    for (int i = 0; i < n - 1; i++)
-    {
-        supdiag[i] = bidiagmatrix(i, i + 1) * bidiagmatrix(i, i + 1);
-    }
-
-    solution = Solver3_methods(diag, supdiag, n);
-
-    return solution;
+    return singularvalues;
 }
