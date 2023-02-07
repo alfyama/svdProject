@@ -16,7 +16,6 @@ void writeSolutionToCsv(VectorF &sol);
 void writeSolutionToCsv(VectorD &sol);
 void writeSolutionToCsv(VectorLD &sol);
 
-VectorD Solver3_main(MatrixD bidiagmatrix);
 
 int main(int argc, char *argv[]) {
 
@@ -67,6 +66,8 @@ int main(int argc, char *argv[]) {
       writeSolutionToCsv(w);
 
     } else if (flagMethod == "peter") {
+      VectorD w = Solver3_main(A);
+      writeSolutionToCsv(w);
 
     } else if (flagMethod == "gdg") {
 
@@ -91,25 +92,4 @@ int main(int argc, char *argv[]) {
   }
 
   return 0;
-}
-
-VectorD Solver3_main(MatrixD bidiagmatrix) {
-  // assert that matrix is bi-diagonal
-
-  int n = bidiagmatrix.num_cols();
-  VectorD diag(n);
-  VectorD supdiag(n);
-  VectorD solution(n);
-
-  // convert and square bidiagonal matrix into two vectors: diag, and supdiag
-  for (int i = 0; i < n; i++) {
-    diag[i] = bidiagmatrix(i, i) * bidiagmatrix(i, i);
-  }
-  for (int i = 0; i < n - 1; i++) {
-    supdiag[i] = bidiagmatrix(i, i + 1) * bidiagmatrix(i, i + 1);
-  }
-
-  solution = Solver3_methods(diag, supdiag, n);
-
-  return solution;
 }
