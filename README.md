@@ -1,3 +1,16 @@
+# installation:
+1. For building the project just run $make$.
+
+2. For running the tests $make tests && runtest$
+
+3. For running the programm $./svd -method=<METHOD> -type=<TYPE> file$
+
+Where METHOD is one of the following:
+
+- gr (Golub Reisnch Method)
+
+
+
 # References:
 1. William H. Press, Saul A. Teukolsky, William T. Vetterling, Brian P. Flannery - 
 Numerical recipes_ the art of scientific computing-Cambridge University Press (2007).pdf
@@ -16,8 +29,9 @@ This is the same data format we used in assigment 7 and 8, I suggest to use the 
 # Files:
 - matrix.h: Matrix object implementation.
 - vector.h: Vector object implementation.
-- methods.h: Methods for computing SVG.
 
 # Methods
 
 1. Golub & Kahan (Alfonso)
+
+

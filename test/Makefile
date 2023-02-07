@@ -1,12 +1,17 @@
 PYTHON_VERSION = 3.8
 VENV_NAME = venv
 
+TESTSCRIPT=create_tests.py
+
 all: install
 
 install:
 	python3 -m venv $(VENV_NAME)
 	. $(VENV_NAME)/bin/activate && pip install --upgrade pip
 	. $(VENV_NAME)/bin/activate && pip install numpy scipy
+	$(source $(VENV_NAME)/bin/activate)
+	python3 $(TESTSCRIPT)
+	$(deactivate)
 
 clean:
-	rm -rf $(VENV_NAME)
+	rm -rf $(VENV_NAME) test*

@@ -184,16 +184,16 @@ void HouseholderReductionToBidiagonal(MatrixD &A, VectorD &w_, VectorD &hv_,
   y_ = y;
 }
 
-void Householder_svdcmp(MatrixD &A, VectorD &w) {
+void GolubReinsch_svd(MatrixD &A, VectorD &w) {
 
   int i, j, k, l, n, m;
   double c, s, f, g, h, y, z, x;
 
-
-  VectorD hv(n);
-
+  y = 0.0;
   m = A.num_rows();
   n = A.num_cols();
+
+  VectorD hv(n);
 
   /* Householder's reduction to bidiagonal */
   HouseholderReductionToBidiagonal(A, w, hv, y);

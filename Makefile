@@ -9,7 +9,7 @@ SRCS=$(wildcard $(SRC)/*.cpp)
 OBJS=$(patsubst $(SRC)/%.cpp, $(SRC)/%.o, $(SRCS))
 
 TESTDIR=test
-TESTSCRIPT=create_tests.py
+# TESTSCRIPT=create_tests.py
 
 TARGET=svd
 
@@ -21,9 +21,7 @@ debug: $(TARGET)
 
 tests:
 	cd $(TESTDIR) && $(MAKE)
-	$(source $(TESTDIR)/venv/bin/activate)
-	python $(TESTDIR)/$(TESTSCRIPT)
-	$(deactivate)
+
 
 $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $@
@@ -33,9 +31,6 @@ $(SRC)/%.o: $(SRC)/%.cpp $(SRC)/%.h
 
 $(SRC)/%.o: $(SRC)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-# $(TESTS):
-# 	$(MAKE) -C subdir $(TESTDIR)
 
 
 .PHONY: all tests

@@ -7,10 +7,11 @@
 #include <limits>
 
 
+void GolubReinsch_svd(MatrixF &A, VectorF &w);
 
-void Householder_svdcmp(MatrixD &A, VectorD &w);
+void GolubReinsch_svd(MatrixD &A, VectorD &w);
 
-void Householder_svdcmp(MatrixD &matrix, MatrixD &V, VectorLD &W);
+void GolubReinsch_svd(MatrixLD &A, VectorLD &w);
 
 
 #endif

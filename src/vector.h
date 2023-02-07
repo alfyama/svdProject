@@ -51,6 +51,8 @@ private:
   }
 };
 
+typedef Vector<Float> VectorF;
+
 typedef Vector<Double> VectorD;
 typedef const Vector<Double> cVectorD;
 

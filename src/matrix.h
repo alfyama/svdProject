@@ -249,6 +249,8 @@ Matrix<T> operator*(const Matrix<T> &lhs, const Matrix<T> &rhs) {
 // limits the class of matrices to numeric types
 // without the need of creating an implementation for
 // each type
+typedef Matrix<Float> MatrixF;
+typedef const Matrix<Float> cMatrixF;
 
 typedef Matrix<Double> MatrixD;
 typedef const Matrix<Double> cMatrixD;
