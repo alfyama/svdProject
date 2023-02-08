@@ -57,6 +57,6 @@ typedef Vector<Double> VectorD;
 typedef const Vector<Double> cVectorD;
 
 typedef Vector<LDouble> VectorLD;
-typedef Vector<LDouble> cVectorLD;
+typedef const Vector<LDouble> cVectorLD;
 
 #endif

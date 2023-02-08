@@ -1,4 +1,4 @@
-#ifndef SVD_MEHTODS
+#ifndef SVD_METHODS
 #define SVD_METHODS
 
 #include "StdTypes.h"

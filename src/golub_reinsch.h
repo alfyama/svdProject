@@ -1,5 +1,5 @@
-#ifndef SVD_MEHTODS
-#define SVD_METHODS
+#ifndef GR_METHOD
+#define GR_METHOD
 
 #include "StdTypes.h"
 #include "matrix.h"
@@ -7,11 +7,11 @@
 #include <limits>
 
 
-void GolubReinsch_svd(MatrixF &A, VectorF &w);
+void GolubReinsch_svdF(MatrixF &A, VectorF &w);
 
-void GolubReinsch_svd(MatrixD &A, VectorD &w);
+void GolubReinsch_svdD(MatrixD &A, VectorD &w);
 
-void GolubReinsch_svd(MatrixLD &A, VectorLD &w);
+void GolubReinsch_svdLD(MatrixLD &A, VectorLD &w);
 
 
 #endif
