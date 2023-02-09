@@ -70,15 +70,16 @@ int main(int argc, char *argv[]) {
       std::string solFileName = createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
 
-    // } else if (flagMethod == "petermethod") {
-    //   VectorD w = Solver3_main(A);
-    //   writeSolutionToCsv(w);
+    } else if (flagMethod == "petermethod") {
+      Solver3_main(A, w);
+      std::string solFileName = createResultFileName(fileName, flagType, flagMethod);
+      writeSolutionToCsv(w, solFileName);
 
-    // } else if (flagMethod == "gdg") {
+    } else if (flagMethod == "gdg") {
 
-    // } else {
-    //   std::cout << "Error -method=<METHOD>" << std::endl;
-    // }
+    } else {
+      std::cout << "Error -method=<METHOD>" << std::endl;
+    }
 
   } else if (flagType == "double") {
     std::vector<double> data;
@@ -95,7 +96,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Error -type=<TYPE>" << std::endl;
     exit(EXIT_FAILURE);
   }
-  }
+  
   exit(EXIT_SUCCESS);
 }
 

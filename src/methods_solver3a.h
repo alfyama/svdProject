@@ -8,7 +8,7 @@
 
 
 //methods for solver3a
-VectorD Solver3_main(MatrixD bidiagmatrix);
+void Solver3_main(MatrixF &matrixA, VectorF &diagV);
 
 
 #endif
