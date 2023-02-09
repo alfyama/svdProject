@@ -189,12 +189,59 @@ void segmentandprocess(VectorD diagvector, VectorD supdiagvector, int B_size, in
     }
 }
 
+#include <cmath>
+#include <vector>
+
+void householder(MatrixF& A)
+{
+    int n = A.num_rows();
+    int m = A.num_cols();
+
+    for (int k = 0; k < m; ++k)
+    {
+        int s = 0;
+        for (int i = k; i < n; ++i)
+        {
+            s += A(i, k) * A(i, k);
+        }
+        int sign = (A(k, k) > 0) ? 1 : -1;
+        int mu = sqrt(s) * sign;
+        A(k, k) -= mu;
+        int norm = 0;
+        for (int i = k; i < n; ++i)
+        {
+            norm += A(i, k) * A(i, k);
+        }
+        norm = sqrt(norm);
+        if (norm == 0)
+        {
+            continue;
+        }
+        for (int i = k; i < n; ++i)
+        {
+            A(i, k) /= norm;
+        }
+        for (int j = k + 1; j < m; ++j)
+        {
+            s = 0;
+            for (int i = k; i < n; ++i)
+            {
+                s += A(i, k) * A(i, j);
+            }
+            for (int i = k; i < n; ++i)
+            {
+                A(i, j) -= 2 * s * A(i, k);
+            }
+        }
+    }
+}
+
 
 VectorD Solver3_methods(VectorD diagvector, VectorD supdiagvector, int B_size)
 {
     int B3_size;
     int B2_size;
-    VectorD singularvalues;
+    VectorD singularvalues(B_size);
 
     thresholdcheck(supdiagvector);
     B3_size = reversecountzeros(supdiagvector, -1, -1 * (B_size - 1));
@@ -213,23 +260,25 @@ VectorD Solver3_methods(VectorD diagvector, VectorD supdiagvector, int B_size)
     return singularvalues;
 }
 
-VectorD Solver3_main(MatrixD bidiagmatrix) {
-  // assert that matrix is bi-diagonal
+VectorD Solver3_main(MatrixF matrixA) {
+    
+    int n = matrixA.num_cols();
+    VectorD diag(n);
+    VectorD supdiag(n);
+    VectorD solution(n);
+    
+    householder(matrixA);
+    // assert that matrix is bi-diagonal
 
-  int n = bidiagmatrix.num_cols();
-  VectorD diag(n);
-  VectorD supdiag(n);
-  VectorD solution(n);
+    // convert and square bidiagonal matrix into two vectors: diag, and supdiag
+    for (int i = 0; i < n; i++) {
+      diag[i] = matrixA(i, i) * matrixA(i, i);
+    }
+    for (int i = 0; i < n - 1; i++) {
+      supdiag[i] = matrixA(i, i + 1) * matrixA(i, i + 1);
+    }
 
-  // convert and square bidiagonal matrix into two vectors: diag, and supdiag
-  for (int i = 0; i < n; i++) {
-    diag[i] = bidiagmatrix(i, i) * bidiagmatrix(i, i);
-  }
-  for (int i = 0; i < n - 1; i++) {
-    supdiag[i] = bidiagmatrix(i, i + 1) * bidiagmatrix(i, i + 1);
-  }
+    solution = Solver3_methods(diag, supdiag, n);
 
-  solution = Solver3_methods(diag, supdiag, n);
-
-  return solution;
+    return solution;
 }
