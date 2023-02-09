@@ -129,7 +129,7 @@ void segmentandprocess(VectorF &diagonal_vector, VectorF &supdiagonal_vector, in
         supdiag_copy[i] = supdiagonal_vector[i];
     }
 
-    while (shiftsuccess = false)
+    while ((shiftsuccess = false))
     {
         for (int k = 0; k < B_size - 1; k++)
         {
