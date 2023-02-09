@@ -122,6 +122,16 @@ public:
     return true;
   }
 
+  void print_matrix() {
+    int row, col;
+    for (row = 0; row < num_rows_; row++) {
+      for (col = 0; col < num_cols_; col++) {
+        std::cout << data_[row * num_cols_ + col] << "  ";
+      }
+      std::cout << std::endl;
+    }
+  }
+
   // Ovelaod operators
   template <class T>
   friend Matrix<T> operator+(const Matrix<T> &lhs, const Matrix<T> &rhs);
