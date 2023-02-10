@@ -3,4 +3,6 @@ compile_commands.json
 src/*.o
 svd
 test/venv/
+test/test*
+results/*
 .DS_Store

@@ -8,11 +8,11 @@
 #include "matrix.h"
 
 
-void readMatrixCsv(std::string fileName, std::vector<float>& mat, int &m, int &n);
+void readMatrixCsvF(std::string fileName, std::vector<float>& mat, int &m, int &n);
 
-void readMatrixCsv(std::string fileName, std::vector<double>& mat, int &m, int &n);
+void readMatrixCsvD(std::string fileName, std::vector<double>& mat, int &m, int &n);
 
-void readMatrixCsv(std::string fileName, std::vector<long double>& mat, int &m, int &n);
+void readMatrixCsvLD(std::string fileName, std::vector<long double>& mat, int &m, int &n);
 
 
 #endif // UTILS_H_

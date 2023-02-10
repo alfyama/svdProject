@@ -1,11 +1,10 @@
+#include <algorithm>
 #include <exception>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
-#include <algorithm>
-#include <filesystem>
-
 
 #include "Utils.h"
 #include "golub_reinsch.h"
@@ -18,8 +17,8 @@ void writeSolutionToCsv(VectorF &sol, std::string fileName);
 void writeSolutionToCsv(VectorD &sol);
 void writeSolutionToCsv(VectorLD &sol);
 
-std::string createResultFileName(std::string filename, std::string type, std::string method);
-
+std::string createResultFileName(std::string filename, std::string type,
+                                 std::string method);
 
 int main(int argc, char *argv[]) {
 
@@ -49,30 +48,34 @@ int main(int argc, char *argv[]) {
     exit(EXIT_FAILURE);
   }
 
-  // TODO Read the file containing the matrix data
-  // pass the data to an array and then pass this array to the contstructor
-  // for the class Matrix.
-  // Then dependeding on the type flag and method flag select the corresponding
-  // method
-
   // Check type flag
   if (flagType == "float") {
     std::vector<float> data;
     int m, n;
-    readMatrixCsv(fileName, data, m, n);
-    int num_singvals = std::min(m, n);
+    readMatrixCsvF(fileName, data, m, n);
+    // int num_singvals = std::min(m, n);
     MatrixF A(m, n, data.data());
-    VectorF w(num_singvals);
+    VectorF w(n);
+
+#if DEBUG
+    std::cout << "Original Matrix: " << std::endl;
+    A.display();
+    std::cout << std::endl;
+#endif
 
     if (flagMethod == "gr") {
       // Golub Reinsch method
+      std::cout << "Golub Reinsch method " << std::endl;
       GolubReinsch_svdF(A, w);
-      std::string solFileName = createResultFileName(fileName, flagType, flagMethod);
+      std::cout << "Method finished " << std::endl;
+      std::string solFileName =
+          createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
 
-    } else if (flagMethod == "petermethod") {
+    } else if (flagMethod == "pm") {
       Solver3_main(A, w);
-      std::string solFileName = createResultFileName(fileName, flagType, flagMethod);
+      std::string solFileName =
+          createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "gdg") {
@@ -84,48 +87,56 @@ int main(int argc, char *argv[]) {
   } else if (flagType == "double") {
     std::vector<double> data;
     int m, n;
-    readMatrixCsv(fileName, data, m, n);
+    readMatrixCsvD(fileName, data, m, n);
     MatrixD A(m, n, data.data());
 
   } else if (flagType == "long double") {
     std::vector<long double> data;
     int m, n;
-    readMatrixCsv(fileName, data, m, n);
+    readMatrixCsvLD(fileName, data, m, n);
     MatrixLD A(m, n, data.data());
   } else {
     std::cout << "Error -type=<TYPE>" << std::endl;
     exit(EXIT_FAILURE);
   }
-  
+
   exit(EXIT_SUCCESS);
 }
 
-void writeSolutionToCsv(VectorF &sol, std::string filenName){
+void writeSolutionToCsv(VectorF &sol, std::string filenName) {
   std::filesystem::create_directory(SOLUTIONS_PATH);
   std::string filePath = SOLUTIONS_PATH "/" + filenName;
   std::ofstream file(filePath);
 
-  if(!file.is_open()) {
-    std::cerr << "Failed to open file" << "\n";
+  if (!file.is_open()) {
+    std::cerr << "Failed to open file " << filePath << "\n";
     exit(EXIT_FAILURE);
   }
 
   int i;
-  for(i=0; i < sol.size(); i++){
+  for (i = 0; i < sol.size(); i++) {
     file << sol[i];
-    if(i != sol.size() - 1)
+    if (i != sol.size() - 1)
       file << ",";
-
   }
+
   file.close();
 }
 
-std::string createResultFileName(std::string filename, std::string type, std::string method){
-  std::string sol = filename.substr(0,filename.find("matrix.csv"));
-  if(type == "float") sol += "F";
-  else if (type == "double") sol += "D";
-  else if (type == "long double") sol += "LD";
-  else;
+std::string createResultFileName(std::string filename, std::string type,
+                                 std::string method) {
+
+  int start = filename.find_last_of("/") + 1;
+  int end = filename.find("matrix.csv");
+  std::string sol = filename.substr(start, end - start);
+  if (type == "float")
+    sol += "F";
+  else if (type == "double")
+    sol += "D";
+  else if (type == "long double")
+    sol += "LD";
+  else
+    ;
 
   sol += method;
   sol += ".csv";

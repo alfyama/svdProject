@@ -33,18 +33,15 @@ void HouseholderTransformColF(MatrixF &A, int i, VectorF &w, VectorF &hv) {
   for (l = i; l < m; l++) {
     scale += A(l, i) * A(l, i);
   }
-
   // We need to scale the values
   // to get the unitary vector that is needed
   // for the Householder transform
   if (scale != 0.0) {
-    // for (l = i; l < m; l++) {
-    //   A(l, i) /= scale;
-    //   norm_col += A(l, i) * A(l, i);
-    // }
+
     f = A(i, i);
 
     g = -copysign(sqrt(scale), f);
+    std::cout <<  g << " ";
     // Note that we norm_col2 is not actually
     // the norm of the column that we find on the pseudo code
     // this is done so that we dont calculate sqrt that might introduce
@@ -70,14 +67,9 @@ void HouseholderTransformColF(MatrixF &A, int i, VectorF &w, VectorF &hv) {
         A(k, j) += f * A(k, i);
       }
     }
-    // Undo scaling, this thogether with
-    // for (l = i; l < m; l++) {
-    //   A(l, i) *= scale;
-    // }
   }
   w[i] = g;
 }
-
 
 void HouseholderTransformColD(MatrixD &A, int i, VectorD &w, VectorD &hv) {
 
@@ -98,7 +90,7 @@ void HouseholderTransformColD(MatrixD &A, int i, VectorD &w, VectorD &hv) {
     scale += A(l, i) * A(l, i);
   }
 
-    if (scale != 0.0) {
+  if (scale != 0.0) {
     f = A(i, i);
 
     g = -copysign(sqrt(scale), f);
@@ -140,7 +132,7 @@ void HouseholderTransformColLD(MatrixLD &A, int i, VectorLD &w, VectorLD &hv) {
     scale += A(l, i) * A(l, i);
   }
 
-    if (scale != 0.0) {
+  if (scale != 0.0) {
     f = A(i, i);
 
     g = -copysign(sqrt(scale), f);
@@ -167,29 +159,24 @@ void HouseholderTransformRowF(MatrixF &A, int i, VectorF &hv) {
   int n, m;
   n = A.num_cols();
   m = A.num_rows();
-  float norm_col, scale;
-  float f, p, s, h;
+  float scale;
+  float f, g, s, h;
   int k, l, j;
 
   // s = 0.0;
   scale = 0.0;
-  norm_col = 0.0;
 
   for (l = i + 1; l < n; l++) {
     scale += A(i, l) * A(i, l);
   }
 
   if (scale != 0.0) {
-    // Scale the rows
-    // for (l = i + 1; l < n; l++) {
-    //   A(i, l) /= scale;
-    //   s += A(i, l) * A(i, l);
-    // }
+
     f = A(i, i + 1);
 
-    p = -copysign(sqrt(norm_col), f);
-    h = f * p - s;
-    A(i, i + 1) = f - p;
+    g = -copysign(sqrt(scale), f);
+    h = f * g - scale;
+    A(i, i + 1) = f - g;
 
     for (j = i + 1; j < n; j++) {
       hv[j] = A(i, j) / h;
@@ -205,9 +192,6 @@ void HouseholderTransformRowF(MatrixF &A, int i, VectorF &hv) {
         A(l, k) += s * hv[k];
       }
     }
-    // for (k = i + 1; k < n; k++) {
-    //   A(i, k) *= scale;
-    // }
   }
 }
 
@@ -308,7 +292,7 @@ void HouseholderTransformRowLD(MatrixLD &A, int i, VectorLD &hv) {
 }
 
 void HouseholderReductionToBidiagonalF(MatrixF &A, VectorF &w_, VectorF &hv_,
-                                      Float y_) {
+                                       Float y_) {
 
   /* Householder method:
    * Input:
@@ -327,48 +311,27 @@ void HouseholderReductionToBidiagonalF(MatrixF &A, VectorF &w_, VectorF &hv_,
 
   float y = 0.0;
 
-  VectorF w(n);
-  VectorF hv(n);
-
-#if DEBUG
-  std::cout << "Original Matrix" << std::endl;
-  A.display();
-  std::cout << std::endl;
-#endif
 
   int i;
-  for (i = 0; i < n; i++) {
+  for (i = 0; i < n; ++i) {
     // Transformations for the cols
     if (i < m) {
-      HouseholderTransformColF(A, i, w, hv_);
-
-#if DEBUG
-      std::cout << "Transform col" << std::endl;
-      A.display();
-      std::cout << std::endl;
-#endif
+      HouseholderTransformColF(A, i, w_, hv_);
     }
     // Transformations for the rows
+
     if (i < n) {
       HouseholderTransformRowF(A, i, hv_);
-#if DEBUG
-      std::cout << "Transform row" << std::endl;
-      A.display();
-      std::cout << std::endl;
-#endif
     }
+
+    y = y > abs(hv_[i] + w_[i]) ? y : abs(hv_[i] + w_[i]);
   }
-#if DEBUG
-  std::cout << "Bidiagonal matrix" << std::endl;
-  A.display();
-  std::cout << std::endl;
-#endif
-  y = y > abs(hv[i] + w[i]) ? y : abs(hv[i] + w[i]);
+
   y_ = y;
 }
 
 void HouseholderReductionToBidiagonalD(MatrixD &A, VectorD &w_, VectorD &hv_,
-                                      Double y_) {
+                                       Double y_) {
 
   /* Householder method:
    * Input:
@@ -390,45 +353,25 @@ void HouseholderReductionToBidiagonalD(MatrixD &A, VectorD &w_, VectorD &hv_,
   VectorD w(n);
   VectorD hv(n);
 
-#if DEBUG
-  std::cout << "Original Matrix" << std::endl;
-  A.display();
-  std::cout << std::endl;
-#endif
-
   int i;
   for (i = 0; i < n; i++) {
     // Transformations for the cols
     if (i < m) {
       HouseholderTransformColD(A, i, w, hv_);
-
-#if DEBUG
-      std::cout << "Transform col" << std::endl;
-      A.display();
-      std::cout << std::endl;
-#endif
     }
     // Transformations for the rows
     if (i < n) {
       HouseholderTransformRowD(A, i, hv_);
-#if DEBUG
-      std::cout << "Transform row" << std::endl;
-      A.display();
-      std::cout << std::endl;
-#endif
     }
+
+    y = y > abs(hv[i] + w[i]) ? y : abs(hv[i] + w[i]);
   }
-#if DEBUG
-  std::cout << "Bidiagonal matrix" << std::endl;
-  A.display();
-  std::cout << std::endl;
-#endif
-  y = y > abs(hv[i] + w[i]) ? y : abs(hv[i] + w[i]);
+
   y_ = y;
 }
 
-void HouseholderReductionToBidiagonalLD(MatrixLD &A, VectorLD &w_, VectorLD &hv_,
-                                      LDouble y_) {
+void HouseholderReductionToBidiagonalLD(MatrixLD &A, VectorLD &w_,
+                                        VectorLD &hv_, LDouble y_) {
 
   /* Householder method:
    * Input:
@@ -450,43 +393,22 @@ void HouseholderReductionToBidiagonalLD(MatrixLD &A, VectorLD &w_, VectorLD &hv_
   VectorLD w(n);
   VectorLD hv(n);
 
-#if DEBUG
-  std::cout << "Original Matrix" << std::endl;
-  A.display();
-  std::cout << std::endl;
-#endif
-
   int i;
   for (i = 0; i < n; i++) {
     // Transformations for the cols
     if (i < m) {
       HouseholderTransformColLD(A, i, w, hv_);
-
-#if DEBUG
-      std::cout << "Transform col" << std::endl;
-      A.display();
-      std::cout << std::endl;
-#endif
     }
     // Transformations for the rows
     if (i < n) {
       HouseholderTransformRowLD(A, i, hv_);
-#if DEBUG
-      std::cout << "Transform row" << std::endl;
-      A.display();
-      std::cout << std::endl;
-#endif
     }
+
+    y = y > abs(hv[i] + w[i]) ? y : abs(hv[i] + w[i]);
   }
-#if DEBUG
-  std::cout << "Bidiagonal matrix" << std::endl;
-  A.display();
-  std::cout << std::endl;
-#endif
-  y = y > abs(hv[i] + w[i]) ? y : abs(hv[i] + w[i]);
+
   y_ = y;
 }
-
 
 void GolubReinsch_svdF(MatrixF &A, VectorF &w) {
 
@@ -501,6 +423,12 @@ void GolubReinsch_svdF(MatrixF &A, VectorF &w) {
 
   /* Householder's reduction to bidiagonal */
   HouseholderReductionToBidiagonalF(A, w, hv, y);
+// FIXME
+#if DEBUG
+  std::cout << "Householder Reduction To Bidiagonal" << std::endl;
+  A.display();
+  std::cout << std::endl;
+#endif
 
   /* Diagonalization of the bidiagonal form */
   double eps = std::numeric_limits<double>::epsilon();
@@ -593,8 +521,8 @@ void GolubReinsch_svdF(MatrixF &A, VectorF &w) {
   w[k] = x;
 }
 
-void GolubReinsch_svdD(MatrixD &A, VectorD &w){
-int i, j, k, l, n, m;
+void GolubReinsch_svdD(MatrixD &A, VectorD &w) {
+  int i, j, k, l, n, m;
   double c, s, f, g, h, y, z, x;
 
   y = 0.0;
@@ -695,10 +623,9 @@ int i, j, k, l, n, m;
   hv[l] = 0.0;
   hv[k] = f;
   w[k] = x;
-
 }
-void GolubReinsch_svdLD(MatrixLD &A, VectorLD &w){
-int i, j, k, l, n, m;
+void GolubReinsch_svdLD(MatrixLD &A, VectorLD &w) {
+  int i, j, k, l, n, m;
   long double c, s, f, g, h, y, z, x;
 
   y = 0.0;
@@ -799,5 +726,4 @@ int i, j, k, l, n, m;
   hv[l] = 0.0;
   hv[k] = f;
   w[k] = x;
-
 }

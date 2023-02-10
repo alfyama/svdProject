@@ -37,6 +37,4 @@ $(SRC)/%.o: $(SRC)/%.cpp
 
 clean:
 	rm -r src/*.o svd
-	cd report && find . ! -name 'main.tex' -type f -exec rm -f {} +
-	cd ..
 	cd $(TESTDIR) && $(MAKE) clean
