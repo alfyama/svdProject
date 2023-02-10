@@ -14,8 +14,8 @@ def testCase2():
     return np.fromfunction(f, (30, 30))
 
 
-def testCases():
-    return np.random.rand()
+def testCases3():
+    return np.random.randint(1, 11,size = (4,3))
 
 
 def write_matrix_to_file(matrix, filename):
@@ -33,15 +33,16 @@ def write_vector_to_file(vec, filename):
 def createTestCases():
     m1 = testCase1()
     m2 = testCase2()
+    m3 = testCases3()
 
-    write_matrix_to_file(m1, "test1matrix.csv")
-    write_matrix_to_file(m2, "test2matrix.csv")
+    matrices = [m1, m2, m3]
 
-    v1 = solveCase(m1)
-    v2 = solveCase(m2)
-
-    write_vector_to_file(v1, "test1svd.csv")
-    write_vector_to_file(v2, "test2svd.csv")
+    for i in range(3):
+        filename = "test" + str(i) + "matrix.csv"
+        write_matrix_to_file(matrices[i], filename)
+        v = solveCase(matrices[i])
+        filename = "test" + str(i) + "svd.csv"
+        write_vector_to_file(v, filename)
 
 
 def solveCase(matrix):

@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <exception>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -11,14 +10,11 @@
 #include "matrix.h"
 #include "methods_solver3a.h"
 
-#define SOLUTIONS_PATH "results"
 
-void writeSolutionToCsv(VectorF &sol, std::string fileName);
-void writeSolutionToCsv(VectorD &sol);
-void writeSolutionToCsv(VectorLD &sol);
+// void writeSolutionToCsv(VectorF &sol, std::string fileName);
 
-std::string createResultFileName(std::string filename, std::string type,
-                                 std::string method);
+// std::string createResultFileName(std::string filename, std::string type,
+//                                  std::string method);
 
 int main(int argc, char *argv[]) {
 
@@ -52,8 +48,7 @@ int main(int argc, char *argv[]) {
   if (flagType == "float") {
     std::vector<float> data;
     int m, n;
-    readMatrixCsvF(fileName, data, m, n);
-    // int num_singvals = std::min(m, n);
+    readMatrixCsv(fileName, data, m, n);
     MatrixF A(m, n, data.data());
     VectorF w(n);
 
@@ -66,7 +61,7 @@ int main(int argc, char *argv[]) {
     if (flagMethod == "gr") {
       // Golub Reinsch method
       std::cout << "Golub Reinsch method " << std::endl;
-      GolubReinsch_svdF(A, w);
+      GolubReinsch_svd(A, w);
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
@@ -87,13 +82,13 @@ int main(int argc, char *argv[]) {
   } else if (flagType == "double") {
     std::vector<double> data;
     int m, n;
-    readMatrixCsvD(fileName, data, m, n);
+    readMatrixCsv(fileName, data, m, n);
     MatrixD A(m, n, data.data());
 
   } else if (flagType == "long double") {
     std::vector<long double> data;
     int m, n;
-    readMatrixCsvLD(fileName, data, m, n);
+    readMatrixCsv(fileName, data, m, n);
     MatrixLD A(m, n, data.data());
   } else {
     std::cout << "Error -type=<TYPE>" << std::endl;
@@ -103,42 +98,43 @@ int main(int argc, char *argv[]) {
   exit(EXIT_SUCCESS);
 }
 
-void writeSolutionToCsv(VectorF &sol, std::string filenName) {
-  std::filesystem::create_directory(SOLUTIONS_PATH);
-  std::string filePath = SOLUTIONS_PATH "/" + filenName;
-  std::ofstream file(filePath);
+// void writeSolutionToCsv(VectorF &sol, std::string filenName) {
+//   std::filesystem::create_directory(SOLUTIONS_PATH);
+//   std::string filePath = SOLUTIONS_PATH "/" + filenName;
+//   std::ofstream file(filePath);
 
-  if (!file.is_open()) {
-    std::cerr << "Failed to open file " << filePath << "\n";
-    exit(EXIT_FAILURE);
-  }
+//   if (!file.is_open()) {
+//     std::cerr << "Failed to open file " << filePath << "\n";
+//     exit(EXIT_FAILURE);
+//   }
 
-  int i;
-  for (i = 0; i < sol.size(); i++) {
-    file << sol[i];
-    if (i != sol.size() - 1)
-      file << ",";
-  }
+//   int i;
+//   for (i = 0; i < sol.size(); i++) {
+//     file << sol[i];
+//     if (i != sol.size() - 1)
+//       file << ",";
+//   }
 
-  file.close();
-}
+//   file << "\n";
+//   file.close();
+// }
 
-std::string createResultFileName(std::string filename, std::string type,
-                                 std::string method) {
+// std::string createResultFileName(std::string filename, std::string type,
+//                                  std::string method) {
 
-  int start = filename.find_last_of("/") + 1;
-  int end = filename.find("matrix.csv");
-  std::string sol = filename.substr(start, end - start);
-  if (type == "float")
-    sol += "F";
-  else if (type == "double")
-    sol += "D";
-  else if (type == "long double")
-    sol += "LD";
-  else
-    ;
+//   int start = filename.find_last_of("/") + 1;
+//   int end = filename.find("matrix.csv");
+//   std::string sol = filename.substr(start, end - start);
+//   if (type == "float")
+//     sol += "F";
+//   else if (type == "double")
+//     sol += "D";
+//   else if (type == "long double")
+//     sol += "LD";
+//   else
+//     ;
 
-  sol += method;
-  sol += ".csv";
-  return sol;
-}
+//   sol += method;
+//   sol += ".csv";
+//   return sol;
+// }
