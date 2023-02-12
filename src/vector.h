@@ -51,6 +51,15 @@ public:
     std::cout << "\n";
   }
 
+  // NOTE This is only for debugging
+  void display_h() {
+    int i;
+    for (i = 0; i < num_elements_; i++) {
+        std::cout << std::setw(6) << std::fixed << std::setprecision(2) << data_[i] << "\n";
+    }
+    std::cout << "\n";
+  }
+
 private:
   int num_elements_;
   Vtype *data_;

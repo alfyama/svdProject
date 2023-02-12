@@ -5,14 +5,14 @@
 
 using namespace std;
 
-void thresholdcheck(VectorF &supdiagonalvector)
+void thresholdcheck(VectorD &supdiagonalvector)
 {
     #if DEBUG
     cout << "starting 'thresholdcheck' on sup diagvector: ";
     supdiagonalvector.display();
     #endif
     // zero out any value on the super-diagonal that meets the convergence criteria
-    float threshold = 0.01;
+    double threshold = 0.01;
     for (int i = 0; i < supdiagonalvector.size(); i++)
     {
         if(supdiagonalvector[i] <= threshold)
@@ -27,7 +27,7 @@ void thresholdcheck(VectorF &supdiagonalvector)
 }
 
 
-int reversecountzeros(VectorF &countingvector, int start, int end)
+int reversecountzeros(VectorD &countingvector, int start, int end)
 {
     #if DEBUG
     cout << "starting 'reversecountzeros' on supdiag vector:";
@@ -52,7 +52,7 @@ int reversecountzeros(VectorF &countingvector, int start, int end)
     return zerocount;
 }
 
-int reversecountnonzeros(VectorF &countingvector, int start, int end)
+int reversecountnonzeros(VectorD &countingvector, int start, int end)
 {
     #if DEBUG
     cout << "starting 'reversecountnonzeros' on supdiag vector:";
@@ -76,7 +76,7 @@ int reversecountnonzeros(VectorF &countingvector, int start, int end)
     return nonzerocount;
 }
 
-void calculatesingularvalues(VectorF &diagonalvector, int &B_size)
+void calculatesingularvalues(VectorD &diagonalvector, int &B_size)
 {
     #if DEBUG
     cout << "begining Singular Value calculation! on vector: ";
@@ -92,7 +92,7 @@ void calculatesingularvalues(VectorF &diagonalvector, int &B_size)
     #endif
 }
 
-void segmentandprocess(VectorF &diagonal_vector, VectorF &supdiagonal_vector, int &B_size, int &B2_size, int &B3_size)
+void segmentandprocess(VectorD &diagonal_vector, VectorD &supdiagonal_vector, int &B_size, int &B2_size, int &B3_size)
 {
 
     #if DEBUG
@@ -106,13 +106,13 @@ void segmentandprocess(VectorF &diagonal_vector, VectorF &supdiagonal_vector, in
         diagonal_vector.display();
     #endif
 
-    //VectorF B2_diag(B2_size);
-    VectorF B2_supdiag(max(B2_size - 1, 0));
-    VectorF B3_diag(B3_size);
-    VectorF B2_diag_copy(B_size);
-    VectorF B2_supdiag_copy(B_size);
+    //VectorD B2_diag(B2_size);
+    VectorD B2_supdiag(max(B2_size - 1, 0));
+    VectorD B3_diag(B3_size);
+    VectorD B2_diag_copy(B_size);
+    VectorD B2_supdiag_copy(B_size);
     bool shiftsuccess = false;
-    VectorF B2_diag_new(B2_size);
+    VectorD B2_diag_new(B2_size);
 
     #if DEBUG
     cout << ">>>>> segmenting B2 vector" << endl;
@@ -160,25 +160,25 @@ void segmentandprocess(VectorF &diagonal_vector, VectorF &supdiagonal_vector, in
     }
     #if DEBUG
     cout << ">>>>> applying shifting strategy \n"
-            ">>>>> sup diag vector = ";
+            ">>>>> B2_supdiag = ";
             B2_supdiag.display();
-    cout << ">>>>> diag vector = ";
+    cout << ">>>>> B2_diag = ";
             B2_diag_new.display();
     #endif
     //apply shifting strategy logic to the B2 vectors. so B2_diag[-1] decreases below tollerence
 
     //set parameter mu = to the minimum singular value (i.e. minimum of B3_diag. but zero if B3_diag is empty)
-    //float mu = min_element(*diagonal_vector.begin(), *diagonal_vector.end());
-    float minimum = (0 == B3_size) ? 0 : B3_diag[0];
+    //double mu = min_element(*diagonal_vector.begin(), *diagonal_vector.end());
+    double minimum = (0 == B3_size) ? 0 : B3_diag[0];
     for (int i = 0; i < B3_size; i++)
     {
-        float a = B3_diag[i];
+        double a = B3_diag[i];
         if (a < minimum)
         {
             minimum = a;
         }
     }
-    float mu = minimum;
+    double mu = minimum;
 
     //create vector copies to revert changes if shift fails.
     for (int i = 0; i < B2_size; i++)
@@ -193,7 +193,7 @@ void segmentandprocess(VectorF &diagonal_vector, VectorF &supdiagonal_vector, in
     
     while ((shiftsuccess == false))
     {
-        float d = B2_diag_new[0] - mu;
+        double d = B2_diag_new[0] - mu;
         for (int k = 0; k < B2_size - 1; k++)
         {
             double t = 0.0;
@@ -220,11 +220,11 @@ void segmentandprocess(VectorF &diagonal_vector, VectorF &supdiagonal_vector, in
                 #if DEBUG
                 cout << ">>>>> Shift failed! d was < 0 before finishing the iterations. decrease mu and iterate again." << endl;
                 #endif
-                for (int i = 0; i < B_size; i++)
+                for (int i = 0; i < B2_size; i++)
                 {
                     B2_diag_new[i] = B2_diag_copy[i];
                 }
-                for (int i = 0; i < B_size - 1; i++)
+                for (int i = 0; i < B2_size - 1; i++)
                 {
                     B2_supdiag[i] = B2_supdiag_copy[i];
                 }
@@ -261,7 +261,7 @@ void segmentandprocess(VectorF &diagonal_vector, VectorF &supdiagonal_vector, in
 }
 
 
-void Householder2(MatrixF &A)
+void Householder2(MatrixD &A)
 {
     #if DEBUG
     cout << "starting householder transformation1" << endl;
@@ -270,10 +270,10 @@ void Householder2(MatrixF &A)
     int m = A.num_rows();
     int n = A.num_cols();
 
-    float scale;
-    float f, g, s, h;
+    double scale;
+    double f, g, s, h;
     int k, l, j;
-    VectorF hv(n);
+    VectorD hv(n);
 
     g = 0.0;
 
@@ -369,9 +369,13 @@ void Householder2(MatrixF &A)
         }
     }
     #if DEBUG
-    cout << "completed householder transformation. Output matrix:" << endl;
+    //cout << "completed householder transformation. Output matrix:" << endl;
+    //VectorD householderdiagvv(n);
+    //for (int i = 0; i < n; i++) {
+    //    householderdiagvv[i] = A(i, i);
+    //}
+    //householderdiagvv.display_h();
     //A.display();
-    //cout << endl;
     #endif
 }
 
@@ -379,7 +383,7 @@ void Householder2(MatrixF &A)
 
 
 
-void Solver3_methods(VectorF &diagvector, VectorF &supdiagvector, int &B_size)
+void Solver3_methods(VectorD &diagvector, VectorD &supdiagvector, int &B_size)
 {
     #if DEBUG
     cout << "starting 'solver3_methods'" << endl;
@@ -387,7 +391,7 @@ void Solver3_methods(VectorF &diagvector, VectorF &supdiagvector, int &B_size)
     int B3_size;
     int B2_size;
     int loop = 1;
-    int max_loops = 20;
+    int max_loops = 10000;
 
     thresholdcheck(supdiagvector);
     B3_size = (B_size - 1 == reversecountzeros(supdiagvector, -1, -1 * (B_size - 1))) ? B_size : reversecountzeros(supdiagvector, -1, -1 * (B_size - 1));
@@ -405,7 +409,7 @@ void Solver3_methods(VectorF &diagvector, VectorF &supdiagvector, int &B_size)
                 cout << "*************" << endl;
         #endif
 
-        loop ++;
+        loop++;
     }
 
     calculatesingularvalues(diagvector, B_size);
@@ -414,13 +418,13 @@ void Solver3_methods(VectorF &diagvector, VectorF &supdiagvector, int &B_size)
     #endif
 }
 
-void Solver3_main(MatrixF &matrixA, VectorF &diagV)
+void Solver3_main(MatrixD &matrixA, VectorD &diagV)
 {
     #if DEBUG
     cout << "starting method ph, 'Solver3_main'" << endl;
     #endif
     int n = min(matrixA.num_cols(), matrixA.num_rows());
-    VectorF supdiagV(n - 1);
+    VectorD supdiagV(n - 1);
     
     Householder2(matrixA);
 
@@ -433,8 +437,10 @@ void Solver3_main(MatrixF &matrixA, VectorF &diagV)
     }
     #if DEBUG
     cout << "initial diagonal and supdiagonal vectors:" << endl;
-    diagV.display();
-    supdiagV.display();
+    cout << "diagV = \n";
+    diagV.display_h();
+    cout << "supdiagV = \n";
+    supdiagV.display_h();
     #endif
 
     Solver3_methods(diagV, supdiagV, n);

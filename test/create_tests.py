@@ -18,6 +18,15 @@ def testCases3():
     return np.random.randint(1, 11,size = (4,3))
 
 
+def testCase4():
+    a = [1,6,3,6,4,6,2,6,6,10,7,2]
+    a = np.array(a)
+    a.resize((4,3))
+    print(a)
+    return a
+
+
+
 def write_matrix_to_file(matrix, filename):
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
@@ -34,10 +43,11 @@ def createTestCases():
     m1 = testCase1()
     m2 = testCase2()
     m3 = testCases3()
+    m4 = testCase4()
 
-    matrices = [m1, m2, m3]
+    matrices = [m1, m2, m3, m4]
 
-    for i in range(3):
+    for i in range(4):
         filename = "test" + str(i) + "matrix.csv"
         write_matrix_to_file(matrices[i], filename)
         v = solveCase(matrices[i])

@@ -75,16 +75,18 @@ int main(int argc, char *argv[]) {
       // Golub Reinsch method
       std::cout << "Golub Reinsch method " << std::endl;
       GolubReinsch_svd(A, w);
+      w.display_h();
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "pm") {
-      // Solver3_main(A, w);
-      // std::string solFileName =
-      //     createResultFileName(fileName, flagType, flagMethod);
-      // writeSolutionToCsv(w, solFileName);
+      //Solver3_main(A, w);
+      //w.display_h();
+      //std::string solFileName =
+      //    createResultFileName(fileName, flagType, flagMethod);
+      //writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "gdg") {
 
@@ -109,10 +111,11 @@ int main(int argc, char *argv[]) {
       writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "pm") {
-      // Solver3_main(A, w);
-      // std::string solFileName =
-      //     createResultFileName(fileName, flagType, flagMethod);
-      // writeSolutionToCsv(w, solFileName);
+      Solver3_main(A, w);
+      w.display_h();
+      std::string solFileName =
+          createResultFileName(fileName, flagType, flagMethod);
+      writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "gdg") {
 
@@ -126,6 +129,7 @@ int main(int argc, char *argv[]) {
     readMatrixCsv(fileName, data, m, n);
     MatrixLD A(m, n, data.data());
     VectorLD w(n);
+    
   } else {
     std::cout << "Error -type=<TYPE>" << std::endl;
     exit(EXIT_FAILURE);
