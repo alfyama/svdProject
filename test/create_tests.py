@@ -58,7 +58,7 @@ def createTestCases():
 
     matrices = [m1, m2, m3, m4, m5]
 
-    for i in range(4):
+    for i in range(5):
         filename = "test" + str(i) + "matrix.csv"
         write_matrix_to_file(matrices[i], filename)
         v = solveCase(matrices[i])
