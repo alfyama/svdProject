@@ -9,12 +9,25 @@
 #include "golub_reinsch.h"
 #include "matrix.h"
 #include "methods_solver3a.h"
+std::string createResultFileName(std::string filename, std::string type,
+                                 std::string method) {
 
+  int start = filename.find_last_of("/") + 1;
+  int end = filename.find("matrix.csv");
+  std::string sol = filename.substr(start, end - start);
+  if (type == "float")
+    sol += "F";
+  else if (type == "double")
+    sol += "D";
+  else if (type == "long double")
+    sol += "LD";
+  else
+    ;
 
-// void writeSolutionToCsv(VectorF &sol, std::string fileName);
-
-// std::string createResultFileName(std::string filename, std::string type,
-//                                  std::string method);
+  sol += method;
+  sol += ".csv";
+  return sol;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -68,10 +81,10 @@ int main(int argc, char *argv[]) {
       writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "pm") {
-      Solver3_main(A, w);
-      std::string solFileName =
-          createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName);
+      // Solver3_main(A, w);
+      // std::string solFileName =
+      //     createResultFileName(fileName, flagType, flagMethod);
+      // writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "gdg") {
 
@@ -84,12 +97,35 @@ int main(int argc, char *argv[]) {
     int m, n;
     readMatrixCsv(fileName, data, m, n);
     MatrixD A(m, n, data.data());
+    VectorD w(n);
+    if (flagMethod == "gr") {
+      // Golub Reinsch method
+      std::cout << "Golub Reinsch method " << std::endl;
+
+      GolubReinsch_svd(A, w);
+      std::cout << "Method finished " << std::endl;
+      std::string solFileName =
+          createResultFileName(fileName, flagType, flagMethod);
+      writeSolutionToCsv(w, solFileName);
+
+    } else if (flagMethod == "pm") {
+      // Solver3_main(A, w);
+      // std::string solFileName =
+      //     createResultFileName(fileName, flagType, flagMethod);
+      // writeSolutionToCsv(w, solFileName);
+
+    } else if (flagMethod == "gdg") {
+
+    } else {
+      std::cout << "Error -method=<METHOD>" << std::endl;
+    }
 
   } else if (flagType == "long double") {
     std::vector<long double> data;
     int m, n;
     readMatrixCsv(fileName, data, m, n);
     MatrixLD A(m, n, data.data());
+    VectorLD w(n);
   } else {
     std::cout << "Error -type=<TYPE>" << std::endl;
     exit(EXIT_FAILURE);

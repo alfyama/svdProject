@@ -145,7 +145,6 @@ void GolubReinsch_svd(Matrix<T> &A, Vector<T> &w) {
 
   /* Householder's reduction to bidiagonal */
   HouseholderReductionToBidiagonal(A, w, hv, y);
-// FIXME
 #if DEBUG
   std::cout << "Householder Reduction To Bidiagonal" << std::endl;
   A.display();
