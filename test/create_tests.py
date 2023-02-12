@@ -22,7 +22,17 @@ def testCase4():
     a = [1,6,3,6,4,6,2,6,6,10,7,2]
     a = np.array(a)
     a.resize((4,3))
-    print(a)
+    #print(a)
+    return a
+
+def testCasebidiag():
+    a = [2.3 ,9.7 ,0.0
+        ,0.0 ,5.5 ,5.4
+        ,0.0 ,0.0 ,7.12
+        ,0.0 ,0.0 ,0.0]
+    a = np.array(a)
+    a.resize((4,3))
+    #print(a)
     return a
 
 
@@ -44,8 +54,9 @@ def createTestCases():
     m2 = testCase2()
     m3 = testCases3()
     m4 = testCase4()
+    m5 = testCasebidiag()
 
-    matrices = [m1, m2, m3, m4]
+    matrices = [m1, m2, m3, m4, m5]
 
     for i in range(4):
         filename = "test" + str(i) + "matrix.csv"
