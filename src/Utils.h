@@ -46,15 +46,20 @@ void readMatrixCsv(std::string fileName, std::vector<T>& mat, int &m, int &n){
 
 
 template<class T, class=std::enable_if_t<std::is_arithmetic<T>::value>>
-void writeSolutionToCsv(Vector<T> &sol, std::string filenName) {
+void writeSolutionToCsv(Vector<T> &sol, std::string filenName, auto starttime, auto endtime) {
   std::filesystem::create_directory(SOLUTIONS_PATH);
   std::string filePath = SOLUTIONS_PATH "/" + filenName;
   std::ofstream file(filePath);
+
+  std::chrono::duration<double> elapsed_seconds = endtime - starttime;
 
   if (!file.is_open()) {
     std::cerr << "Failed to open file " << filePath << "\n";
     exit(EXIT_FAILURE);
   }
+
+  file << "elapsed time (s): ";
+  file << elapsed_seconds.count() << "\n";
 
   int i;
   for (i = 0; i < sol.size(); i++) {

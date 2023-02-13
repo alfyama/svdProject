@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <chrono>
 
 #include "Utils.h"
 #include "golub_reinsch.h"
@@ -73,17 +74,24 @@ int main(int argc, char *argv[]) {
 
     if (flagMethod == "gr") {
       std::cout << "Golub Reinsch method " << std::endl;
+      // start method timer
+      auto start = std::chrono::high_resolution_clock::now();
       GolubReinsch_svd(A, w);
+      auto end = std::chrono::high_resolution_clock::now();
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName);
+      writeSolutionToCsv(w, solFileName, start, end);
 
     } else if (flagMethod == "dqds") {
+      std::cout << "Differential quotient-difference method " << std::endl;
+      // start method timer
+      auto start = std::chrono::high_resolution_clock::now();
       dqds_main(A, w);
+      auto end = std::chrono::high_resolution_clock::now();
       std::string solFileName =
          createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName);
+      writeSolutionToCsv(w, solFileName, start, end);
 
     } else if (flagMethod == "gdg") {
 
@@ -99,19 +107,25 @@ int main(int argc, char *argv[]) {
     VectorD w(n);
     if (flagMethod == "gr") {
       std::cout << "Golub Reinsch method " << std::endl;
+      // start method timer
+      auto start = std::chrono::high_resolution_clock::now();
       GolubReinsch_svd(A, w);
+      auto end = std::chrono::high_resolution_clock::now();
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName);
+      writeSolutionToCsv(w, solFileName, start, end);
 
     } else if (flagMethod == "dqds") {
       std::cout << "Differential quotient-difference method " << std::endl;
+      // start method timer
+      auto start = std::chrono::high_resolution_clock::now();
       dqds_main(A, w);
+      auto end = std::chrono::high_resolution_clock::now();
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName);
+      writeSolutionToCsv(w, solFileName, start, end);
 
     } else if (flagMethod == "gdg") {
 
@@ -127,20 +141,25 @@ int main(int argc, char *argv[]) {
     VectorLD w(n);
     if (flagMethod == "gr") {
       std::cout << "Golub Reinsch method " << std::endl;
-
+      // start method timer
+      auto start = std::chrono::high_resolution_clock::now();
       GolubReinsch_svd(A, w);
+      auto end = std::chrono::high_resolution_clock::now();
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName);
+      writeSolutionToCsv(w, solFileName, start, end);
 
     } else if (flagMethod == "dqds") {
       std::cout << "Differential quotient-difference method " << std::endl;
+      // start method timer
+      auto start = std::chrono::high_resolution_clock::now();
       dqds_main(A, w);
+      auto end = std::chrono::high_resolution_clock::now();
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName);
+      writeSolutionToCsv(w, solFileName, start, end);
 
     } else if (flagMethod == "gdg") {
 
