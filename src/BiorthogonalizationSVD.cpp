@@ -2,8 +2,6 @@
 #include <iomanip>
 #include <math.h>
 
-#define MIN(a,b) ((a)<(b)?(a):(b))
-#define MAX(a,b) ((a)<(b)?(b):(a))
 
 class Matrix 
 {
@@ -225,56 +223,14 @@ void Matrix::BiorthogonalizationSVD(Matrix &U, Matrix &V)
 
 
 
-
-
-
-
-
-
-	for (int i = 0; i < num_cols_; i++) 
-	{
-		u.zero(); v.zero();
-		
-		Norm = 0.0;
-		for (int j = i; j < num_rows_; j++) 
-		{
-			u.data_[j] = R.data_[j * num_cols_ + i];
-			Norm += u.data_[j] * u.data_[j];
-		}
-		Norm = sqrt(Norm);
-		
-		alpha = u.data_[i] < 0 ? Norm : -Norm;
-
-		Norm = 0.0;
-		for (int j = i; j < num_rows_; j++) 
-		{
-			v.data_[j] = j == i ? u.data_[j] + alpha : u.data_[j];
-			Norm += v.data_[j] * v.data_[j];
-		}
-		Norm = sqrt(Norm);
-
-		if (Norm < 0.0000000001) continue;
-
-		for (int j = i; j < num_rows_; j++) v.data_[j] /= Norm;
-
-		H = I - (v * v.transpose()) * 2.0;
-
-		R = H * R;
-		Q = Q * H;
-	}
 }
 
 int main(int argc, char* argv[]) 
 {
 	double temp[] = {2, 1, 3, 5, 6, 7,    -1, 0, 7, 1, 10, 12,    0, -1, -1, 3, 5, 16,   -3, 7, 4, 3, 2, 1,  1, 6, 4, -3, 7, 3};
-	Matrix A__(5,6,temp);
-	Matrix Q__(2,2), R__(2,2);
-	A__.BiorthogonalizationSVD(Q__, R__);
-
-	A__.output();
-	Q__.output();
-	R__.output();
-	(Q__*R__).output();
+	Matrix (5,6,temp);
+	Matrix (2,2), R__(2,2);
+	A.BiorthogonalizationSVD(Q__, R__);
 
 	return 0;
 }
