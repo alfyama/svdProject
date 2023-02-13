@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
       writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "dqds") {
-      Solver3_main(A, w);
+      dqds_main(A, w);
       std::string solFileName =
          createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
 
     } else if (flagMethod == "dqds") {
       std::cout << "Differential quotient-difference method " << std::endl;
-      Solver3_main(A, w);
+      dqds_main(A, w);
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
 
     } else if (flagMethod == "dqds") {
       std::cout << "Differential quotient-difference method " << std::endl;
-      Solver3_main(A, w);
+      dqds_main(A, w);
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
