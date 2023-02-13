@@ -36,8 +36,6 @@ def testCasebidiag():
 
 
 
-
-
 def write_matrix_to_file(matrix, filename):
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
@@ -75,10 +73,18 @@ def generate_random_matrices(start_size, size_increment, num_matrices):
     for i in range(num_matrices):
         matrix_size = start_size + i * size_increment
         matrix = np.random.randint(0, 21, size=(matrix_size, matrix_size))
-        filename = "testmatrix_" + str(matrix_size) + "x" + str(matrix_size) + ".csv"
-        with open(filename, 'w', newline='') as f:
+        vector = linalg.svdvals(matrix)
+        vector = np.atleast_2d(vector)
+        filename_matrix = "testmatrix_" + str(matrix_size) + "x" + str(matrix_size) + ".csv"
+        with open(filename_matrix, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerows(matrix)
+        filename_svd = "testmatrix_" + str(matrix_size) + "x" + str(matrix_size) + "svd.csv"
+        with open(filename_svd, 'w', newline='') as g:
+            writer = csv.writer(g)
+            writer.writerows(vector)
+
+
 
 
 if __name__ == '__main__':
