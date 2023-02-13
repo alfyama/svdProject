@@ -36,6 +36,8 @@ def testCasebidiag():
 
 
 
+
+
 def write_matrix_to_file(matrix, filename):
     with open(filename, 'w', newline='') as file:
         writer = csv.writer(file)
@@ -77,8 +79,6 @@ def generate_random_matrices(start_size, size_increment, num_matrices):
         with open(filename, 'w', newline='') as f:
             writer = csv.writer(f)
             writer.writerows(matrix)
-
-
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 .POSIX:
 
 CXX=g++
-CXXFLAGS=-g -Wall -std=c++17 #-fopenmp
+CXXFLAGS=-g -Wall -fconcepts -std=c++17 #-fopenmp
 
 SRC=src
 SRCS=$(wildcard $(SRC)/*.cpp)

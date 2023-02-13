@@ -135,8 +135,9 @@ void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w, Vector<T> &hv,
       }
     }
     y = y > abs(hv[i] + w[i]) ? y : abs(hv[i] + w[i]);
-    std::cout << "y: " << y << std::endl;
+
   }
+  y_ = y;
 }
 
 template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
@@ -144,9 +145,10 @@ void GolubReinsch_svd(Matrix<T> &A, Vector<T> &w) {
   int i, j, k, l, n, iter;
   T c, s, f, g, h, y, z, x;
 
-  i = j = k = l = iter = 0;
-  y = c = s = g = h = y = z = x = 0.0;
+  // i = j = k = l = iter = 0;
+  // y = c = s = g = h = y = z = x = 0.0;
   // m = A.num_rows();
+  y = 0.0;
   n = A.num_cols();
 
   Vector<T> hv(n);
@@ -164,7 +166,7 @@ void GolubReinsch_svd(Matrix<T> &A, Vector<T> &w) {
 #endif
 
   /* Diagonalization of the bidiagonal form */
-  auto eps = std::numeric_limits<T>::epsilon();
+  T eps = std::numeric_limits<T>::epsilon();
 
   eps *= y;
 

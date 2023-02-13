@@ -3,10 +3,10 @@
 
 #include <cassert>
 #include <cstddef>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <iomanip>
 
 #include "StdTypes.h"
 #include "vector.h"
@@ -32,12 +32,6 @@ public:
     }
   }
 
-  Matrix(int m, int n, const std::vector<Mtype>& data) : num_rows_(m), num_cols_(n) {
-
-    // TODO implement this constructors for vectors
-
-  }
-
   // Destructors
   ~Matrix() { delete[] data_; }
 
@@ -46,15 +40,28 @@ public:
 
   inline int num_cols() const { return num_cols_; }
 
-  // NOTE This is only for debugging
   void display() {
     int i, j;
     for (i = 0; i < num_rows_; i++) {
       for (j = 0; j < num_cols_; j++) {
-        std::cout << std::setw(6) << std::fixed << std::setprecision(2) << data_[i * num_cols_ + j] << "  ";
+        std::cout << std::setw(6) << std::fixed << std::setprecision(2)
+                  << data_[i * num_cols_ + j] << "  ";
       }
       std::cout << "\n";
     }
+  }
+
+  Matrix<Mtype> &operator=(const Matrix &B) {
+    if (num_rows_ * num_cols_ != B.num_rows_ * B.num_cols_) {
+      delete[] data_;
+      data_ = new Mtype[B.num_rows_ * B.num_cols_];
+    }
+    num_rows_ = B.num_rows_;
+    num_cols_ = B.num_cols_;
+
+    for (int i = 0; i < num_rows_ * B.num_cols_; i++)
+      data_[i] = B.data_[i];
+    return *this;
   }
 
   // get/set element by index
@@ -82,14 +89,26 @@ public:
     std::swap(data_[col1 * num_rows_], data_[col2 * num_rows_], num_rows_);
   }
 
-  Matrix transpose() const {
-    Matrix trp(num_cols_, num_rows_);
-    int i, j;
-    for (i = 0; i < num_rows_; i++) {
-      for (j = 0; j < num_cols_; j++) {
-        trp(j, i) = (*this)(i, j);
-      }
-    }
+  Matrix<Mtype> transpose() {
+    Matrix R(num_cols_, num_rows_);
+    for (int j = 0; j < num_rows_; j++)
+      for (int i = 0; i < num_cols_; i++)
+        R.data_[i * num_rows_ + j] = data_[j * num_cols_ + i];
+    return R;
+  }
+
+  Matrix<Mtype> &zero() {
+    for (int j = 0; j < num_rows_; j++)
+      for (int i = 0; i < num_cols_; i++)
+        data_[j * num_cols_ + i] = 0.0;
+    return *this;
+  }
+
+  Matrix<Mtype> &Identity() {
+    for (int j = 0; j < num_rows_; j++)
+      for (int i = 0; i < num_cols_; i++)
+        data_[j * num_cols_ + i] = i == j ? 1.0 : 0.0;
+    return *this;
   }
 
   bool resize(int n, int m) {
@@ -109,8 +128,6 @@ public:
 
   bool is_identity() {
     int i, j;
-    // TODO Do parrallel code to check if matrix is identity
-
     for (i = 0; i < num_rows_; i++) {
       for (j = 0; j < num_cols_; j++) {
         if (i != j && data_[i * num_cols_ + j] != 0)
@@ -148,6 +165,26 @@ public:
   template <class T>
   friend Vector<T> operator*(const Matrix<T> &lhs, const Vector<T> &rhs);
 
+  Matrix operator*(const Matrix &A) {
+    Matrix R(num_rows_, num_cols_);
+    for (int j = 0; j < num_rows_; j++)
+      for (int i = 0; i < num_cols_; i++) {
+        R.data_[j * num_cols_ + i] = 0.0;
+        for (int k = 0; k < num_cols_; k++)
+          R.data_[j * num_cols_ + i] +=
+              data_[j * num_cols_ + k] * data_[k * num_cols_ + i];
+      }
+    return R;
+  }
+
+  Matrix operator*(const double s) {
+    Matrix R(num_rows_, num_cols_);
+    for (int j = 0; j < num_rows_; j++)
+      for (int i = 0; i < num_cols_; i++)
+        R.data_[j * num_cols_ + i] = data_[j * num_cols_ + i] * s;
+    return R;
+  }
+
 private:
   int num_rows_;
   int num_cols_;
@@ -164,52 +201,38 @@ private:
   inline void checkRowRange(int i) const { assert(0 <= i && i <= num_cols_); }
 };
 
-template <class Mtype> class Identity : public Matrix<Mtype> {
-public:
-  explicit Identity(int n) : Matrix<Mtype>::Matrix(n, n) {
-    int i, j;
-    for (i = 0; i < n; i++) {
-      for (j = 0; j < n; j++) {
-        (*this)(i, j) = (i == j) ? 1 : 0;
-      }
-    }
-  }
+// template <class Mtype> class Identity : public Matrix<Mtype> {
+// public:
+//   explicit Identity(int n) : Matrix<Mtype>::Matrix(n, n) {
+//     int i, j;
+//     for (i = 0; i < n; i++) {
+//       for (j = 0; j < n; j++) {
+//         (*this)(i, j) = (i == j) ? 1 : 0;
+//       }
+//     }
+//   }
 
-  explicit Identity(int m, int n) : Matrix<Mtype>::Matrix(n, n) {
-    int i, j;
-    for (i = 0; i < m; i++) {
-      for (j = 0; j < n; j++) {
-        (*this)(i, j) = (i == j) ? 1 : 0;
-      }
-    }
-  }
+//   explicit Identity(int m, int n) : Matrix<Mtype>::Matrix(n, n) {
+//     int i, j;
+//     for (i = 0; i < m; i++) {
+//       for (j = 0; j < n; j++) {
+//         (*this)(i, j) = (i == j) ? 1 : 0;
+//       }
+//     }
+//   }
 
-  // This allows us to have rectangular matrices, but with a diagonal of ones
-  Identity(const Matrix<Mtype> &M)
-      : Matrix<Mtype>::Matrix(M.num_rows(), M.num_cols()) {
-    (*this).resize(M.num_rows(), M.num_rows());
-    int i, j;
-    for (i = 0; i < M.num_rows(); i++) {
-      for (j = 0; j < M.num_cols(); j++) {
-        (*this)(i, j) = (i == j) ? 1 : 0;
-      }
-    }
-  }
-};
-
-// TODO
-/* Overload * operator */
-// template<class T>
-// Vector<T> operator* (const Vector<T>& lhs, const Matrix<T>& rhs){
-
-//   Matrix<T> return_mat(rhs.num_rows_m, rhs.num_cols_);
-
-// }
-
-// template<class T>
-// Vector<T> operator* (const Matrix<T>& lhs, const Vector<T>& rhs){
-
-// }
+//   // This allows us to have rectangular matrices, but with a diagonal of ones
+//   Identity(const Matrix<Mtype> &M)
+//       : Matrix<Mtype>::Matrix(M.num_rows(), M.num_cols()) {
+//     (*this).resize(M.num_rows(), M.num_rows());
+//     int i, j;
+//     for (i = 0; i < M.num_rows(); i++) {
+//       for (j = 0; j < M.num_cols(); j++) {
+//         (*this)(i, j) = (i == j) ? 1 : 0;
+//       }
+//     }
+//   }
+// };
 
 template <class T>
 Matrix<T> operator*(const Matrix<T> &lhs, const Matrix<T> &rhs) {
@@ -255,8 +278,8 @@ typedef const Matrix<Float> cMatrixF;
 typedef Matrix<Double> MatrixD;
 typedef const Matrix<Double> cMatrixD;
 
-typedef Identity<Double> IdentityD;
-typedef const Identity<Double> cIdentityD;
+// typedef Identity<Double> IdentityD;
+// typedef const Identity<Double> cIdentityD;
 
 typedef Matrix<LDouble> MatrixLD;
 typedef const Matrix<LDouble> cMatrixLD;
