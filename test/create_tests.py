@@ -69,6 +69,18 @@ def solveCase(matrix):
     return linalg.svdvals(matrix)
 
 
+def generate_random_matrices(start_size, size_increment, num_matrices):
+    for i in range(num_matrices):
+        matrix_size = start_size + i * size_increment
+        matrix = np.random.randint(0, 21, size=(matrix_size, matrix_size))
+        filename = "testmatrix_" + str(matrix_size) + "x" + str(matrix_size) + ".csv"
+        with open(filename, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(matrix)
+
+
+
 
 if __name__ == '__main__':
     createTestCases()
+    generate_random_matrices(5, 5, 10)
