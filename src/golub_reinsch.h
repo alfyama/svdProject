@@ -21,8 +21,8 @@ T L2Norm(const T x, const T y) {
 }
 
 template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
-void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w,
-                                       Vector<T> &hv, T &y_) {
+void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w, Vector<T> &hv,
+                                      T &y_) {
   /* Householder method:
    * Input:
    * Original matrix A of size m x n
@@ -37,12 +37,12 @@ void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w,
   T y;
   T scale;
   T f, g, s, h;
-  int k, l, j;
+  int k, l, j, i;
 
   y = 0.0;
   g = 0.0;
 
-  int i;
+  auto eps = std::numeric_limits<T>::epsilon();
   for (i = 0; i < n; ++i) {
 
     hv[i] = g;
@@ -57,12 +57,15 @@ void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w,
       // We need to scale the values
       // to get the unitary vector that is needed
       // for the Householder transform
-      if (scale == 0.0)
+      if (scale <= eps)
         g = 0.0;
       else {
         f = A(i, i);
 
-        g = -copysign(sqrt(scale), f);
+        // g = -copysign(sqrt(scale), f);
+
+        g = f < 0 ? sqrt(scale) : -sqrt(scale);
+
         // Note that we norm_col2 is not actually
         // the norm of the column that we find on the pseudo code
         // this is done so that we dont calculate sqrt that might introduce
@@ -75,7 +78,7 @@ void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w,
         A(i, i) = f - g;
 
         // Update the matrix
-        // This performs the matix * matrix
+        // This performs the matrix * matrix
         // of the Houselhoder Transform and the
         // original matrix A
         for (j = i + 1; j < n; j++) {
@@ -109,7 +112,9 @@ void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w,
 
         f = A(i, i + 1);
 
-        g = -copysign(sqrt(scale), f);
+        // g = -copysign(sqrt(scale), f);
+
+        g = f < 0 ? sqrt(scale) : -sqrt(scale);
         h = f * g - scale;
         A(i, i + 1) = f - g;
 
@@ -130,6 +135,7 @@ void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w,
       }
     }
     y = y > abs(hv[i] + w[i]) ? y : abs(hv[i] + w[i]);
+    std::cout << "y: " << y << std::endl;
   }
 }
 
@@ -138,7 +144,8 @@ void GolubReinsch_svd(Matrix<T> &A, Vector<T> &w) {
   int i, j, k, l, n, iter;
   T c, s, f, g, h, y, z, x;
 
-  y = 0.0;
+  i = j = k = l = iter = 0;
+  y = c = s = g = h = y = z = x = 0.0;
   // m = A.num_rows();
   n = A.num_cols();
 
@@ -146,16 +153,18 @@ void GolubReinsch_svd(Matrix<T> &A, Vector<T> &w) {
 
   /* Householder's reduction to bidiagonal */
   HouseholderReductionToBidiagonal(A, w, hv, y);
+
+
 #if DEBUG
   std::cout << "Householder Reduction To Bidiagonal" << std::endl;
   w.display();
   hv.display();
+  std::cout << "y: " << y << std::endl;
   std::cout << std::endl;
 #endif
 
-
   /* Diagonalization of the bidiagonal form */
-  T eps = std::numeric_limits<T>::epsilon();
+  auto eps = std::numeric_limits<T>::epsilon();
 
   eps *= y;
 
@@ -254,6 +263,7 @@ void GolubReinsch_svd(Matrix<T> &A, Vector<T> &w) {
       w[k] = x;
     }
   }
+  w.reorder();
 }
 
 #endif

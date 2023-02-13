@@ -2,6 +2,9 @@
 #define SVD_VECTOR
 
 #include <cmath>
+#include <iostream>
+#include <iomanip>
+#include <algorithm>
 
 #include "StdTypes.h"
 
@@ -31,7 +34,8 @@ public:
   Vtype *begin() { return data_; }
   Vtype *end() { return data_ + num_elements_; }
 
-  bool resize() { return true; }
+  void reorder() { std::sort(data_, data_ + num_elements_, std::greater<Vtype>()); }
+
 
   // Vtype norm(){
   //   Vtype val;
