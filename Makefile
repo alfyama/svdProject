@@ -9,7 +9,6 @@ SRCS=$(wildcard $(SRC)/*.cpp)
 OBJS=$(patsubst $(SRC)/%.cpp, $(SRC)/%.o, $(SRCS))
 
 TESTDIR=test
-# TESTSCRIPT=create_tests.py
 
 TARGET=svd
 
@@ -36,5 +35,5 @@ $(SRC)/%.o: $(SRC)/%.cpp
 .PHONY: all tests
 
 clean:
-	rm -r src/*.o svd
+	rm -r src/*.o results/* svd
 	cd $(TESTDIR) && $(MAKE) clean

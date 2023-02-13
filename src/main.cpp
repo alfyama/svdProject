@@ -82,11 +82,11 @@ int main(int argc, char *argv[]) {
       writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "pm") {
-      //Solver3_main(A, w);
-      //w.display_h();
-      //std::string solFileName =
+      // Solver3_main(A, w);
+      // w.display_h();
+      // std::string solFileName =
       //    createResultFileName(fileName, flagType, flagMethod);
-      //writeSolutionToCsv(w, solFileName);
+      // writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "gdg") {
 
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
 
     } else if (flagMethod == "pm") {
       Solver3_main(A, w);
-      w.display_h();
+      w.display();
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
@@ -129,6 +129,7 @@ int main(int argc, char *argv[]) {
     readMatrixCsv(fileName, data, m, n);
     MatrixLD A(m, n, data.data());
     VectorLD w(n);
+
     
   } else {
     std::cout << "Error -type=<TYPE>" << std::endl;
@@ -137,44 +138,3 @@ int main(int argc, char *argv[]) {
 
   exit(EXIT_SUCCESS);
 }
-
-// void writeSolutionToCsv(VectorF &sol, std::string filenName) {
-//   std::filesystem::create_directory(SOLUTIONS_PATH);
-//   std::string filePath = SOLUTIONS_PATH "/" + filenName;
-//   std::ofstream file(filePath);
-
-//   if (!file.is_open()) {
-//     std::cerr << "Failed to open file " << filePath << "\n";
-//     exit(EXIT_FAILURE);
-//   }
-
-//   int i;
-//   for (i = 0; i < sol.size(); i++) {
-//     file << sol[i];
-//     if (i != sol.size() - 1)
-//       file << ",";
-//   }
-
-//   file << "\n";
-//   file.close();
-// }
-
-// std::string createResultFileName(std::string filename, std::string type,
-//                                  std::string method) {
-
-//   int start = filename.find_last_of("/") + 1;
-//   int end = filename.find("matrix.csv");
-//   std::string sol = filename.substr(start, end - start);
-//   if (type == "float")
-//     sol += "F";
-//   else if (type == "double")
-//     sol += "D";
-//   else if (type == "long double")
-//     sol += "LD";
-//   else
-//     ;
-
-//   sol += method;
-//   sol += ".csv";
-//   return sol;
-// }

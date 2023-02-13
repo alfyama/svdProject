@@ -1,4 +1,5 @@
 import csv
+
 import numpy as np
 from scipy import linalg
 
@@ -15,14 +16,13 @@ def testCase2():
 
 
 def testCases3():
-    return np.random.randint(1, 11,size = (4,3))
+    return np.random.randint(1, 11,size=(4, 3))
 
 
 def testCase4():
     a = [1,6,3,6,4,6,2,6,6,10,7,2]
     a = np.array(a)
-    a.resize((4,3))
-    print(a)
+    a.resize((4, 3))
     return a
 
 

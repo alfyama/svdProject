@@ -25,7 +25,9 @@ void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w,
                                        Vector<T> &hv, T &y_) {
   /* Householder method:
    * Input:
-   * matrix: Original matrix A of size m x n
+   * Original matrix A of size m x n
+   * Output:
+   *
    * */
 
   // Housholder reduction to bidiagonal form.
@@ -129,7 +131,6 @@ void HouseholderReductionToBidiagonal(Matrix<T> &A, Vector<T> &w,
     }
     y = y > abs(hv[i] + w[i]) ? y : abs(hv[i] + w[i]);
   }
-  y_ = y;
 }
 
 template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
@@ -147,9 +148,11 @@ void GolubReinsch_svd(Matrix<T> &A, Vector<T> &w) {
   HouseholderReductionToBidiagonal(A, w, hv, y);
 #if DEBUG
   std::cout << "Householder Reduction To Bidiagonal" << std::endl;
-  A.display();
+  w.display();
+  hv.display();
   std::cout << std::endl;
 #endif
+
 
   /* Diagonalization of the bidiagonal form */
   T eps = std::numeric_limits<T>::epsilon();
