@@ -1,11 +1,11 @@
 #include "matrix.h"
 #include "vector.h"
-#include "methods_solver3a.h"
 #include <algorithm>
 
 using namespace std;
 
-void thresholdcheck(VectorD &supdiagonalvector)
+template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
+void thresholdcheck(Vector<T> &supdiagonalvector)
 {
 #if DEBUG
     cout << "starting 'thresholdcheck' on sup diagvector: ";
@@ -26,7 +26,8 @@ void thresholdcheck(VectorD &supdiagonalvector)
 #endif
 }
 
-int reversecountzeros(VectorD &countingvector, int start, int end)
+template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
+int reversecountzeros(Vector<T> &countingvector, int start, int end)
 {
 #if DEBUG
     cout << "starting 'reversecountzeros' on supdiag vector:";
@@ -51,7 +52,8 @@ int reversecountzeros(VectorD &countingvector, int start, int end)
     return zerocount;
 }
 
-int reversecountnonzeros(VectorD &countingvector, int start, int end)
+template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
+int reversecountnonzeros(Vector<T> &countingvector, int start, int end)
 {
 #if DEBUG
     cout << "starting 'reversecountnonzeros' on supdiag vector:";
@@ -75,7 +77,8 @@ int reversecountnonzeros(VectorD &countingvector, int start, int end)
     return nonzerocount;
 }
 
-void calculatesingularvalues(VectorD &diagonalvector, int &B_size)
+template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
+void calculatesingularvalues(Vector<T> &diagonalvector, int &B_size)
 {
 #if DEBUG
     cout << "begining Singular Value calculation! on vector: ";
@@ -91,7 +94,8 @@ void calculatesingularvalues(VectorD &diagonalvector, int &B_size)
 #endif
 }
 
-void segmentandprocess(VectorD &diagonal_vector, VectorD &supdiagonal_vector, int &B_size, int &B2_size, int &B3_size)
+template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
+void segmentandprocess(Vector<T> &diagonal_vector, Vector<T> &supdiagonal_vector, int &B_size, int &B2_size, int &B3_size)
 {
 
 #if DEBUG
@@ -108,13 +112,13 @@ void segmentandprocess(VectorD &diagonal_vector, VectorD &supdiagonal_vector, in
 //    diagonal_vector.display();
 #endif
 
-    // VectorD B2_diag(B2_size);
-    VectorD B2_supdiag(max(B2_size - 1, 0));
-    VectorD B3_diag(B3_size);
-    VectorD diagonal_vector_copy(B_size);
-    VectorD supdiagonal_vector_copy(B_size);
+    // Vector<T> B2_diag(B2_size);
+    Vector<T> B2_supdiag(max(B2_size - 1, 0));
+    Vector<T> B3_diag(B3_size);
+    Vector<T> diagonal_vector_copy(B_size);
+    Vector<T> supdiagonal_vector_copy(B_size);
     bool shiftsuccess = false;
-    VectorD B2_diag_new(B2_size);
+    Vector<T> B2_diag_new(B2_size);
 
 #if DEBUG
     cout << ">>>>> segmenting B2 vector" << endl;
@@ -150,11 +154,11 @@ void segmentandprocess(VectorD &diagonal_vector, VectorD &supdiagonal_vector, in
             B2_diag_new.display();
 #endif
             // apply givens roation so that B2_supdiag[i-1] == 0, and update the original diag/supdiag vectors (note, i is backwards indexing)
-            double x = B2_supdiag[(i + B2_size) - 1];
-            double y = B2_diag_new[i + B2_size];
-            double r = sqrt(pow(x, 2) + pow(y, 2));
-            double c = y / r;
-            double s = x / r;
+            T x = B2_supdiag[(i + B2_size) - 1];
+            T y = B2_diag_new[i + B2_size];
+            T r = sqrt(pow(x, 2) + pow(y, 2));
+            T c = y / r;
+            T s = x / r;
             //cout << "x = " << x << " y = " << y << " r = " << r << " c = " << c << " s = " << s << endl;
             B2_diag_new[i + B2_size] = B2_supdiag[(i + B2_size) - 1];
             B2_diag_new[(i + B2_size) - 1] = -1 * B2_diag_new[(i + B2_size) - 1];
@@ -193,18 +197,18 @@ void segmentandprocess(VectorD &diagonal_vector, VectorD &supdiagonal_vector, in
     // apply shifting strategy logic to the B2 vectors. so B2_diag[-1] decreases below tollerence
 
     // set parameter mu = to the minimum singular value (i.e. minimum of B3_diag. but zero if B3_diag is empty)
-    // double mu = min_element(*diagonal_vector.begin(), *diagonal_vector.end());
-    // double minimum = (0 == B3_size) ? 0 : B3_diag[0];
-    double minimum = diagonal_vector[0];
+    // T mu = min_element(*diagonal_vector.begin(), *diagonal_vector.end());
+    // T minimum = (0 == B3_size) ? 0 : B3_diag[0];
+    T minimum = diagonal_vector[0];
     for (int i = 0; i < B_size; i++)
     {
-        double a = diagonal_vector[i];
+        T a = diagonal_vector[i];
         if (a < minimum)
         {
             minimum = a;
         }
     }
-    double mu = minimum;
+    T mu = minimum;
 
     // create vector copies to revert changes if shift fails.
     for (int i = 0; i < B_size; i++)
@@ -219,7 +223,7 @@ void segmentandprocess(VectorD &diagonal_vector, VectorD &supdiagonal_vector, in
 
     while ((shiftsuccess == false))
     {
-        double d = diagonal_vector[0]; // - mu;
+        T d = diagonal_vector[0]; // - mu;
         for (int k = 0; k < B_size - 1; k++)
         {
             double t = 0.0;
@@ -276,7 +280,8 @@ void segmentandprocess(VectorD &diagonal_vector, VectorD &supdiagonal_vector, in
 #endif
 }
 
-void Householder2(MatrixD &A, VectorD &hv, VectorD &w)
+template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
+void Householder(Matrix<T> &A, Vector<T> &hv, Vector<T> &w)
 {
 #if DEBUG
     cout << "starting householder transformation with matrix:" << endl;
@@ -388,7 +393,7 @@ void Householder2(MatrixD &A, VectorD &hv, VectorD &w)
     }
 #if DEBUG
     cout << "completed householder transformation. Output matrix:" << endl;
-    // VectorD householderdiagvv(n);
+    // Vector<T> householderdiagvv(n);
     // for (int i = 0; i < n; i++) {
     //     householderdiagvv[i] = A(i, i);
     // }
@@ -401,10 +406,11 @@ void Householder2(MatrixD &A, VectorD &hv, VectorD &w)
 #endif
 }
 
-void Solver3_methods(VectorD &diagvector, VectorD &supdiagvector, int &B_size)
+template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
+void dqds_methods(Vector<T> &diagvector, Vector<T> &supdiagvector, int &B_size)
 {
 #if DEBUG
-    cout << "starting 'solver3_methods'" << endl;
+    cout << "starting 'dqds_methods'" << endl;
 #endif
     int B3_size;
     int B2_size;
@@ -432,20 +438,21 @@ void Solver3_methods(VectorD &diagvector, VectorD &supdiagvector, int &B_size)
 
     calculatesingularvalues(diagvector, B_size);
 #if DEBUG
-    cout << "finished 'solver3_methods'" << endl;
+    cout << "finished 'dqds_methods'" << endl;
 #endif
 }
 
-void Solver3_main(MatrixD &matrixA, VectorD &diagV)
+template <class T, class = std::enable_if_t<std::is_arithmetic<T>::value>>
+void dqds_main(Matrix<T> &matrixA, Vector<T> &diagV)
 {
 #if DEBUG
-    cout << "starting method ph, 'Solver3_main'" << endl;
+    cout << "starting method ph, 'dqds_main'" << endl;
 #endif
     int n = min(matrixA.num_cols(), matrixA.num_rows());
-    VectorD supdiagV(n - 1);
-    VectorD householdersupdiag(n);
+    Vector<T> supdiagV(n - 1);
+    Vector<T> householdersupdiag(n);
 
-    Householder2(matrixA, householdersupdiag, diagV);
+    Householder(matrixA, householdersupdiag, diagV);
     // square diag and supdiag vectors
     for (int i = 0; i < n; i++)
     {
@@ -464,10 +471,10 @@ void Solver3_main(MatrixD &matrixA, VectorD &diagV)
     supdiagV.display_h();
 #endif
 
-    Solver3_methods(diagV, supdiagV, n);
+    dqds_methods(diagV, supdiagV, n);
     diagV.reorder();
 
 #if DEBUG
-    cout << "completed 'Sovler3_main'" << endl;
+    cout << "completed 'dqds_main'" << endl;
 #endif
 }

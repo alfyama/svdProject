@@ -8,7 +8,7 @@
 #include "Utils.h"
 #include "golub_reinsch.h"
 #include "matrix.h"
-#include "methods_solver3a.h"
+#include "dqds.h"
 std::string createResultFileName(std::string filename, std::string type,
                                  std::string method) {
 
@@ -72,21 +72,18 @@ int main(int argc, char *argv[]) {
 #endif
 
     if (flagMethod == "gr") {
-      // Golub Reinsch method
       std::cout << "Golub Reinsch method " << std::endl;
       GolubReinsch_svd(A, w);
-      w.display_h();
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
 
-    } else if (flagMethod == "pm") {
-      // Solver3_main(A, w);
-      // w.display_h();
-      // std::string solFileName =
-      //    createResultFileName(fileName, flagType, flagMethod);
-      // writeSolutionToCsv(w, solFileName);
+    } else if (flagMethod == "dqds") {
+      Solver3_main(A, w);
+      std::string solFileName =
+         createResultFileName(fileName, flagType, flagMethod);
+      writeSolutionToCsv(w, solFileName);
 
     } else if (flagMethod == "gdg") {
 
@@ -101,18 +98,17 @@ int main(int argc, char *argv[]) {
     MatrixD A(m, n, data.data());
     VectorD w(n);
     if (flagMethod == "gr") {
-      // Golub Reinsch method
       std::cout << "Golub Reinsch method " << std::endl;
-
       GolubReinsch_svd(A, w);
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
 
-    } else if (flagMethod == "pm") {
+    } else if (flagMethod == "dqds") {
+      std::cout << "Differential quotient-difference method " << std::endl;
       Solver3_main(A, w);
-      w.display();
+      std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName);
@@ -129,11 +125,29 @@ int main(int argc, char *argv[]) {
     readMatrixCsv(fileName, data, m, n);
     MatrixLD A(m, n, data.data());
     VectorLD w(n);
+    if (flagMethod == "gr") {
+      std::cout << "Golub Reinsch method " << std::endl;
 
-    
-  } else {
+      GolubReinsch_svd(A, w);
+      std::cout << "Method finished " << std::endl;
+      std::string solFileName =
+          createResultFileName(fileName, flagType, flagMethod);
+      writeSolutionToCsv(w, solFileName);
+
+    } else if (flagMethod == "dqds") {
+      std::cout << "Differential quotient-difference method " << std::endl;
+      Solver3_main(A, w);
+      std::cout << "Method finished " << std::endl;
+      std::string solFileName =
+          createResultFileName(fileName, flagType, flagMethod);
+      writeSolutionToCsv(w, solFileName);
+
+    } else if (flagMethod == "gdg") {
+
+    } else {
     std::cout << "Error -type=<TYPE>" << std::endl;
     exit(EXIT_FAILURE);
+  }
   }
 
   exit(EXIT_SUCCESS);
