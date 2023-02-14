@@ -9,8 +9,8 @@
 #include "Utils.h"
 #include "dqds.h"
 #include "golub_reinsch.h"
-#include "matrix.h"
 #include "jacobiRot.h"
+#include "matrix.h"
 
 std::string createResultFileName(std::string filename, std::string type,
                                  std::string method) {
@@ -21,7 +21,7 @@ std::string createResultFileName(std::string filename, std::string type,
   if (type == "float")
     sol += "F";
   else if (type == "double")
-    sol += "D";
+    sol += "DO";
   else if (type == "long double")
     sol += "LD";
   else
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName, start, end,m,n);
+      writeSolutionToCsv(w, solFileName, start, end, m, n);
 
     } else if (flagMethod == "dqds") {
       std::cout << "Differential quotient-difference method " << std::endl;
@@ -97,19 +97,7 @@ int main(int argc, char *argv[]) {
           createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName, start, end, m, n);
 
-    } // else if (flagMethod == "jr") {
-    //   std::cout << "Jacobi Rotation method " << std::endl;
-    //   // start method timer
-    //   auto start = std::chrono::high_resolution_clock::now();
-    //   jacobiRotation(A, w);
-    //   auto end = std::chrono::high_resolution_clock::now();
-    //   std::cout << "Method finished " << std::endl;
-    //   std::string solFileName =
-    //       createResultFileName(fileName, flagType, flagMethod);
-    //   writeSolutionToCsv(w, solFileName, start, end);
-
-    // }
-    else {
+    } else {
       std::cout << "Error -method=<METHOD>" << std::endl;
     }
 
@@ -141,19 +129,7 @@ int main(int argc, char *argv[]) {
           createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName, start, end, m, n);
 
-    } // else if (flagMethod == "jr") {
-    //   std::cout << "Jacobi Rotation method " << std::endl;
-    //   // start method timer
-    //   auto start = std::chrono::high_resolution_clock::now();
-    //   jacobiRotation(A, w);
-    //   auto end = std::chrono::high_resolution_clock::now();
-    //   std::cout << "Method finished " << std::endl;
-    //   std::string solFileName =
-    //       createResultFileName(fileName, flagType, flagMethod);
-    //   writeSolutionToCsv(w, solFileName, start, end);
-
-    // }
-    else {
+    } else {
       std::cout << "Error -method=<METHOD>" << std::endl;
     }
 
@@ -172,7 +148,7 @@ int main(int argc, char *argv[]) {
       std::cout << "Method finished " << std::endl;
       std::string solFileName =
           createResultFileName(fileName, flagType, flagMethod);
-      writeSolutionToCsv(w, solFileName, start, end,m , n);
+      writeSolutionToCsv(w, solFileName, start, end, m, n);
 
     } else if (flagMethod == "dqds") {
       std::cout << "Differential quotient-difference method " << std::endl;
@@ -185,18 +161,7 @@ int main(int argc, char *argv[]) {
           createResultFileName(fileName, flagType, flagMethod);
       writeSolutionToCsv(w, solFileName, start, end, m, n);
 
-    } // else if (flagMethod == "jr") {
-    //   std::cout << "Jacobi Rotation method " << std::endl;
-    //   // start method timer
-    //   auto start = std::chrono::high_resolution_clock::now();
-    //   dqds_main(A, w);
-    //   auto end = std::chrono::high_resolution_clock::now();
-    //   std::cout << "Method finished " << std::endl;
-    //   std::string solFileName =
-    //       createResultFileName(fileName, flagType, flagMethod);
-    //   writeSolutionToCsv(w, solFileName, start, end);
-    // }
-    else {
+    } else {
       std::cout << "Error -type=<TYPE>" << std::endl;
       exit(EXIT_FAILURE);
     }

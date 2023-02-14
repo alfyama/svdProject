@@ -50,7 +50,7 @@ public:
   void display() {
     int i;
     for (i = 0; i < num_elements_; i++) {
-        std::cout << std::setw(6) << std::fixed << std::setprecision(2) << data_[i] << "  ";
+        std::cout << std::setw(12) << std::fixed << std::setprecision(10) << data_[i] << "  ";
     }
     std::cout << "\n";
   }
@@ -59,7 +59,7 @@ public:
   void display_h() {
     int i;
     for (i = 0; i < num_elements_; i++) {
-        std::cout << std::setw(6) << std::fixed << std::setprecision(2) << data_[i] << "\n";
+        std::cout << std::setw(12) << std::fixed << std::setprecision(10) << data_[i] << "\n";
     }
     std::cout << "\n";
   }

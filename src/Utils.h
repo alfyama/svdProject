@@ -57,39 +57,19 @@ void writeSolutionToCsv(Vector<T> &sol, std::string filenName, auto starttime,
     exit(EXIT_FAILURE);
   }
 
-  file << "elapsed time (s): \n";
-  file << elapsed_seconds.count() << "\n";
+  file << "Time,Rows,Cols\n";
 
+  file << elapsed_seconds.count() << ",";
+  file << m << "," << n <<"\n";
+
+  std::cout << std::endl;
   int i;
   for (i = 0; i < sol.size(); i++) {
-    file << sol[i];
+    file << std::fixed << std::setprecision(16) <<sol[i];
     if (i != sol.size() - 1)
       file << ",";
   }
-  file << "\n";
-  file << m << " " << n << "\n";
   file.close();
-}
-
-template <class T>
-std::string createResultFileName(std::string filename, std::string type,
-                                 std::string method) {
-
-  int start = filename.find_last_of("/") + 1;
-  int end = filename.find("matrix.csv");
-  std::string sol = filename.substr(start, end - start);
-  if (type == "float")
-    sol += "F";
-  else if (type == "double")
-    sol += "D";
-  else if (type == "long double")
-    sol += "LD";
-  else
-    ;
-
-  sol += method;
-  sol += ".csv";
-  return sol;
 }
 
 #endif // UTILS_H_
