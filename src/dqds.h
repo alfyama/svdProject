@@ -57,7 +57,6 @@ int reversecountnonzeros(Vector<T> &countingvector, int start, int end)
 {
 #if DEBUG
     cout << "starting 'reversecountnonzeros' on supdiag vector:";
-//    countingvector.display();
 #endif
     int nonzerocount = 0;
     for (int i = start; i >= end; --i)
@@ -82,7 +81,6 @@ void calculatesingularvalues(Vector<T> &diagonalvector, int &B_size)
 {
 #if DEBUG
     cout << "begining Singular Value calculation! on vector: ";
-//    diagonalvector.display();
 #endif
     for (int i = 0; i < B_size; i++)
     {
@@ -90,7 +88,6 @@ void calculatesingularvalues(Vector<T> &diagonalvector, int &B_size)
     }
 #if DEBUG
     cout << "Finished Calculating Singular Values!";
-//    diagonalvector.display();
 #endif
 }
 
@@ -100,16 +97,6 @@ void segmentandprocess(Vector<T> &diagonal_vector, Vector<T> &supdiagonal_vector
 
 #if DEBUG
     cout << "starting 'segmentandprocess' iteration\n"
-            "B_size = "
-         << B_size << "\n"
-                      "B2_size = "
-         << B2_size << "\n"
-                       "B3_size = "
-         << B3_size << "\n"
-                       "sup diag vector = ";
-//    supdiagonal_vector.display();
-    cout << "diag vector = ";
-//    diagonal_vector.display();
 #endif
 
     // Vector<T> B2_diag(B2_size);
@@ -148,27 +135,13 @@ void segmentandprocess(Vector<T> &diagonal_vector, Vector<T> &supdiagonal_vector
         {
 #if DEBUG
             cout << ">>>>> applying givens roation to: \n"
-                    ">>>>> B2_supdiag ";
-            B2_supdiag.display();
-            cout << ">>>>> B2_diag ";
-            B2_diag_new.display();
 #endif
-            // apply givens roation so that B2_supdiag[i-1] == 0, and update the original diag/supdiag vectors (note, i is backwards indexing)
-            T x = B2_supdiag[(i + B2_size) - 1];
-            T y = B2_diag_new[i + B2_size];
-            T r = sqrt(pow(x, 2) + pow(y, 2));
-            T c = y / r;
-            T s = x / r;
             //cout << "x = " << x << " y = " << y << " r = " << r << " c = " << c << " s = " << s << endl;
             B2_diag_new[i + B2_size] = B2_supdiag[(i + B2_size) - 1];
             B2_diag_new[(i + B2_size) - 1] = -1 * B2_diag_new[(i + B2_size) - 1];
             B2_supdiag[(i + B2_size) - 1] = 0; // should be 0 after rotation
 #if DEBUG
-            cout << ">>>>> finished givens roation. output vectors: \n"
-                    ">>>>> B2_supdiag ";
-            B2_supdiag.display();
-            cout << ">>>>> B2_diag ";
-            B2_diag_new.display();
+            cout << ">>>>> finished givens roation." << endl;
 #endif
 
             // copy all changes to B2_vectors to the original diag & supdiag vectors
@@ -189,26 +162,8 @@ void segmentandprocess(Vector<T> &diagonal_vector, Vector<T> &supdiagonal_vector
     }
 #if DEBUG
     cout << ">>>>> applying shifting strategy \n"
-            ">>>>> supdiagonal_vector = ";
-//    supdiagonal_vector.display();
-    cout << ">>>>> diagonal_vector = ";
-//    diagonal_vector.display();
 #endif
     // apply shifting strategy logic to the B2 vectors. so B2_diag[-1] decreases below tollerence
-
-    // set parameter mu = to the minimum singular value (i.e. minimum of B3_diag. but zero if B3_diag is empty)
-    // T mu = min_element(*diagonal_vector.begin(), *diagonal_vector.end());
-    // T minimum = (0 == B3_size) ? 0 : B3_diag[0];
-    T minimum = diagonal_vector[0];
-    for (int i = 0; i < B_size; i++)
-    {
-        T a = diagonal_vector[i];
-        if (a < minimum)
-        {
-            minimum = a;
-        }
-    }
-    T mu = minimum;
 
     // create vector copies to revert changes if shift fails.
     for (int i = 0; i < B_size; i++)
@@ -223,27 +178,16 @@ void segmentandprocess(Vector<T> &diagonal_vector, Vector<T> &supdiagonal_vector
 
     while ((shiftsuccess == false))
     {
-        T d = diagonal_vector[0]; // - mu;
+        T d = diagonal_vector[0];
         for (int k = 0; k < B_size - 1; k++)
         {
             double t = 0.0;
-#if DEBUG
-            cout << ">>>>> shifting strategy starting iteration " << k << " with values mu = " << mu << " d = " << d << " t = " << t << "\n"
-                                                                                                                                        ">>>>>      supdiagonal_vector = ";
-//            supdiagonal_vector.display();
-            cout << ">>>>>      diagonal_vector = ";
-//            diagonal_vector.display();
-#endif
             diagonal_vector[k] = d + supdiagonal_vector[k];
             t = diagonal_vector[k + 1] / diagonal_vector[k];
             supdiagonal_vector[k] = supdiagonal_vector[k] * t;
-            d = d * t; // - mu;
+            d = d * t;
 #if DEBUG
-            cout << ">>>>> shifting strategy finishing values: mu = " << mu << " d = " << d << " t = " << t << "\n"
-                                                                                                               ">>>>>      supdiagonal_vector = ";
-//            supdiagonal_vector.display();
-            cout << ">>>>>      diagonal_vector = ";
-//            diagonal_vector.display();
+            cout << ">>>>> shifting strategy finishing" << endl;
 #endif
             if (d < 0)
             {
@@ -258,7 +202,6 @@ void segmentandprocess(Vector<T> &diagonal_vector, Vector<T> &supdiagonal_vector
                 {
                     supdiagonal_vector[i] = supdiagonal_vector_copy[i];
                 }
-                // mu = mu / 2;
                 shiftsuccess = false;
                 break;
             }
@@ -272,11 +215,7 @@ void segmentandprocess(Vector<T> &diagonal_vector, Vector<T> &supdiagonal_vector
     }
 
 #if DEBUG
-    cout << ">>>>> completed 'segmentandprocess' iteration. \n"
-            "sup diagonal = ";
-//    supdiagonal_vector.display();
-    cout << "diag vector = ";
-//    diagonal_vector.display();
+    cout << ">>>>> completed 'segmentandprocess' iteration." endl;
 #endif
 }
 
@@ -285,7 +224,6 @@ void Householder(Matrix<T> &A, Vector<T> &hv, Vector<T> &w)
 {
 #if DEBUG
     cout << "starting householder transformation with matrix:" << endl;
-//    A.display();
 #endif
 
     int m = A.num_rows();
@@ -392,17 +330,7 @@ void Householder(Matrix<T> &A, Vector<T> &hv, Vector<T> &w)
         }
     }
 #if DEBUG
-    cout << "completed householder transformation. Output matrix:" << endl;
-    // Vector<T> householderdiagvv(n);
-    // for (int i = 0; i < n; i++) {
-    //     householderdiagvv[i] = A(i, i);
-    // }
-    // householderdiagvv.display_h();
-//    A.display();
-    cout << "hv = " << endl;
-//    hv.display();
-    cout << "w = " << endl;
-//    w.display();
+    cout << "completed householder transformation." << endl;
 #endif
 }
 
